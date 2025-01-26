@@ -7,11 +7,11 @@ public class Punch : MonoBehaviour
 {
     public PlayerControls playerControls;
 
-    public int perfectPunchDmg;
-    public int weakAttackDmg;
-
-    public float perfectPunchForce;
-    public float weakAttackForce;
+    public int rightArmDmg;
+    public float rightArmPunchForce;
+    
+    public int leftArmDmg;
+    public float leftArmPunchForce;
     
     public float leftTimer;
     public bool chargingLeftPunch;
@@ -24,7 +24,6 @@ public class Punch : MonoBehaviour
     
     private float sphereRadius;
     public float sweetPunchRadius;
-    public float weakPunchRadius;
     
     public LayerMask layerMask;
     private IEnumerator leftPunchCoroutine;
@@ -32,8 +31,14 @@ public class Punch : MonoBehaviour
     
     public Transform leftPunchTransform;   
     public Transform rightPunchTransform;
+
+    public int numberOfPunchFrames;
+    
+    private FlingAndRotate flingAndRotate;
     
     private Collider[] colliders = new Collider[50];
+
+    public event Action<bool> AnnounceLeftRightFail;
 
     public event Action<bool> AnnounceLeftRightPunch;
 
@@ -82,6 +87,7 @@ public class Punch : MonoBehaviour
     
     private void HandleRightPunch(InputAction.CallbackContext context)
     {
+        
         if (context.performed)
         {
             rightTimer = 0;
@@ -111,20 +117,35 @@ public class Punch : MonoBehaviour
     void SwingPunch(float time, bool input)
     {
         bool isPerfectPunch = time >= minSweetTime && time <= maxSweetTime;
+        
+        int punchDmg = input ? rightArmDmg : leftArmDmg;
+        float punchForce = input ? rightArmPunchForce : leftArmPunchForce;
     
         if (isPerfectPunch)
         {
             sphereRadius = sweetPunchRadius;
-            PerformOverlapSphere(input, perfectPunchDmg, perfectPunchForce, true);
+            StartCoroutine(SwingPunchCoro(input, punchDmg, punchForce, true));
         }
         else
         {
-            sphereRadius = weakPunchRadius;
-            PerformOverlapSphere(input, weakAttackDmg, weakAttackForce, false);
+            AnnounceLeftRightFail?.Invoke(input);
+            return;
         }
 
         // Add punch duration here later
         AnnounceLeftRightPunch?.Invoke(input);
+    }
+
+    public IEnumerator SwingPunchCoro(bool input, int newAttackDamage, float newAttackForce, bool isPerfectPunch)
+    {
+        int counter = 0;
+
+        while (counter < numberOfPunchFrames)
+        {
+            counter++;
+            PerformOverlapSphere(input, newAttackDamage, newAttackForce, isPerfectPunch);
+            yield return new WaitForFixedUpdate();
+        }
     }
 
     public void PerformOverlapSphere(bool input, int newAttackDamage, float newAttackForce, bool isPerfectPunch)
@@ -142,11 +163,10 @@ public class Punch : MonoBehaviour
             {
                 health.ChangeHP(newAttackDamage);
 
-                // Announce perfect punch only if it is a perfect punch
                 if (isPerfectPunch)
                 {
                     AnnouncePerfectPunch?.Invoke(input);
-                    Debug.Log("Perfect punch");
+                    // Debug.Log("Perfect punch");
                 }
             }
 
@@ -155,14 +175,16 @@ public class Punch : MonoBehaviour
             {
                 Vector3 pushDirection = colliders[i].transform.position - punchTransform.position;
                 pushDirection.Normalize();
-
-                // Apply force to the hit object
-                rb.AddForce(pushDirection * newAttackForce, ForceMode.Impulse);
+                Vector3 finalDirection = new Vector3(pushDirection.x, 1, pushDirection.z);
+                rb.AddForce(finalDirection * newAttackForce, ForceMode.Impulse);
+        
+                flingAndRotate = SingletonTools.Instance.flingAndRotate;
+                flingAndRotate.Explode(rb);
+        
+                SingletonTools.Instance.powerGauge.IncreasePower();
             }
         }
     }
-
-           
             
     void OnDisable()
     {

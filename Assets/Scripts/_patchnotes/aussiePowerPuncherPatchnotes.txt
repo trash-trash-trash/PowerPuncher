@@ -11,3 +11,10 @@
 -- movement based on inputs WASD -- left right rotates 
 
 -- added Punching using left/right click
+
+1.1
+
+-- spawning AI in a circle
+
+-- AI uses navmesh to walk towards player TODO: damage player
+

@@ -5,12 +5,13 @@ using UnityEngine;
 public class PowerGauge : MonoBehaviour
 {
     public int currentPower=0;
-
     public int desiredPowerLevel;
 
     public float numberOfMultipliers=1;
-    public int maxNumberOfMultipliers = 50;
+    public int maxNumberOfMultipliers = 30;
 
+    
+    
     public bool powerIncreasing=false;
 
     private IEnumerator addPowerCoro;

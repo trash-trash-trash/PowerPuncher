@@ -8,6 +8,7 @@ public class AIBrain : MonoBehaviour
     
     public HealthComponent HP;
 
+    public GameObject spawnObj;
     public GameObject walkObj;
     public GameObject growShrinkObj;
     public GameObject dieObj;
@@ -16,13 +17,21 @@ public class AIBrain : MonoBehaviour
 
     public GameObjectStateManager sm;
     
+    private bool initialized = false;
+    
     private void OnEnable()
     {
-        AIStatesDict.Add(AIStates.WalkToPlayer, walkObj);
-        AIStatesDict.Add(AIStates.GrowShrink, growShrinkObj);
-        AIStatesDict.Add(AIStates.Die, dieObj);
-        
-        ChangeState(AIStates.WalkToPlayer);
+        if (!initialized)
+        {
+            AIStatesDict.Add(AIStates.Spawn, spawnObj);
+            AIStatesDict.Add(AIStates.WalkToPlayer, walkObj);
+            AIStatesDict.Add(AIStates.GrowShrink, growShrinkObj);
+            AIStatesDict.Add(AIStates.Die, dieObj);
+
+            //hack?
+            Physics.IgnoreLayerCollision(7, 7);
+            initialized = true;
+        }
 
         HP.AnnounceHP += Die;
     }

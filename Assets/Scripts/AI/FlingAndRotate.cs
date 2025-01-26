@@ -15,8 +15,6 @@ public class FlingAndRotate : MonoBehaviour
         rb = newRb;
         
         rb.constraints = RigidbodyConstraints.None;
-        
-        rb.AddForce(Vector2.up * upForce);
 
         /*direction = new Vector3(0, 0, 0);
         direction.x = RandomBetween1And3();

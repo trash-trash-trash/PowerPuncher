@@ -12,20 +12,18 @@ public class AIDeathState : AIStateBase
     public override void OnEnable()
     {
         base.OnEnable();
-        rb = GetComponentInParent<Rigidbody>();
-        
-        flingAndRotate = SingletonTools.Instance.flingAndRotate;
-        flingAndRotate.Explode(rb);
-        
-        SingletonTools.Instance.powerGauge.IncreasePower();
+        agent.enabled = false;
 
         StartCoroutine(WaitToDespawn());
     }
 
     private IEnumerator WaitToDespawn()
     {
-        yield return new WaitForFixedUpdate();
+        yield return new WaitForSeconds(5);
         collider = GetComponentInParent<CapsuleCollider>();
         collider.isTrigger = true;
+        
+        yield return new WaitForSeconds(5);
+        aiBrain.gameObject.SetActive(false);
     }
 }
