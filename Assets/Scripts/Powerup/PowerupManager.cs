@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 public class PowerupManager : MonoBehaviour
 {
     public bool isPaused = false;
-
+    
     public GameObject powerGaugeObj;
     public GameObject leftArmSliderObj;
     public GameObject rightArmSliderObj;
@@ -18,6 +18,12 @@ public class PowerupManager : MonoBehaviour
     public List<GameObject> powerupObjs = new List<GameObject>();
     public List<Powerup> powerupList = new List<Powerup>();
     public Dictionary<PowerupsEnum, Powerup> powerups = new Dictionary<PowerupsEnum, Powerup>();
+
+    public Sprite movementSprite;
+    public Sprite addMinimapSprite;
+    public Sprite increaseMinimapSprite;
+    public Sprite increasePunchMaxSweetSprite;
+    public Sprite decreasePunchMinSweetSprite;
     
     public event Action<Powerup> AnnouncePowerup;
 
@@ -27,55 +33,51 @@ public class PowerupManager : MonoBehaviour
         addMinimap.powerupType = PowerupsEnum.AddMiniMap;
         addMinimap.powerupName = "ADD MINIMAP";
         addMinimap.powerupDescription = "Adds a minimap to your HUD.";
-        addMinimap.effectAmount = new List<float>();
+        addMinimap.effects = "<color=#00FF00>+1 Minimap</color>";
+        addMinimap.sprite = addMinimapSprite;
         powerups.Add(PowerupsEnum.AddMiniMap, addMinimap);
-        
-        Powerup increaseLeftArm = new Powerup();
-        increaseLeftArm.powerupType = PowerupsEnum.IncreaseLeftArm;
-        increaseLeftArm.powerupName = "POWER UP LEFT ARM";
-        increaseLeftArm.powerupDescription = "Increases your left arm's reach and power.";
-        increaseLeftArm.effectAmount = new List<float>();
-        increaseLeftArm.effectAmount.Add(1);
-        powerups.Add(PowerupsEnum.IncreaseLeftArm, increaseLeftArm);
-        
-        Powerup increaseRightArm = new Powerup();
-        increaseRightArm.powerupType = PowerupsEnum.IncreaseRightArm;
-        increaseRightArm.powerupName = "POWER UP RIGHT ARM";
-        increaseRightArm.powerupDescription = "Increases your right arm's reach and power.";
-        increaseRightArm.effectAmount = new List<float>();
-        increaseRightArm.effectAmount.Add(1);
-        powerups.Add(PowerupsEnum.IncreaseRightArm, increaseRightArm);
         
         Powerup increaseMovementSpeed = new Powerup();
         increaseMovementSpeed.powerupType = PowerupsEnum.IncreaseMovementSpeed;
         increaseMovementSpeed.powerupName = "POWER UP LEGS";
         increaseMovementSpeed.powerupDescription = "Increases your movement speed.";
-        increaseMovementSpeed.effectAmount = new List<float>();
+        
+     //   exampleText.text = "This is <color=#FF0000>red</color>\nThis is <color=#00FF00>green</color>\nThis is <color=#0000FF>blue</color>";
+
+        increaseMovementSpeed.effects = "<color=#00FF00>+5 Movement Speed\n+5 Acceleration</color>";
+        increaseMovementSpeed.sprite = movementSprite;
         powerups.Add(PowerupsEnum.IncreaseMovementSpeed, increaseMovementSpeed);
         
+        //change this to left/right
         Powerup decreaseChargeTime = new Powerup();
         decreaseChargeTime.powerupType = PowerupsEnum.DecreaseChargeTime;
         decreaseChargeTime.powerupName = "POWER UP PUNCH SPEED";
-        decreaseChargeTime.powerupDescription = "Decreases your punches' minimum charge time.";
-        decreaseChargeTime.effectAmount = new List<float>();
-        decreaseChargeTime.effectAmount.Add(1);
+        decreaseChargeTime.powerupDescription = "Decreases your punches' minimum charge time, letting you punch faster.";
+        decreaseChargeTime.effects = "<color=#00FF00>-0.1 Punch Charge Time</color>";
+        decreaseChargeTime.sprite = decreasePunchMinSweetSprite;
         powerups.Add(PowerupsEnum.DecreaseChargeTime, decreaseChargeTime);
         
         Powerup increaseSweetTime = new Powerup();
         increaseSweetTime.powerupType = PowerupsEnum.IncreaseSweetTime;
         increaseSweetTime.powerupName = "POWER UP PUNCH TIME";
         increaseSweetTime.powerupDescription = "Increases your punches' sweet time, making it easier to land.";
-        increaseSweetTime.effectAmount = new List<float>();
-        increaseSweetTime.effectAmount.Add(1);
+        increaseSweetTime.effects = "<color=#00FF00>+0.1 Punch Max Sweet Time</color>";
+        increaseSweetTime.sprite = increasePunchMaxSweetSprite;
         powerups.Add(PowerupsEnum.IncreaseSweetTime, increaseSweetTime);
         
         Powerup increaseEnemyAndScore = new Powerup();
         increaseEnemyAndScore.powerupType = PowerupsEnum.IncreaseEnemySize;
         increaseEnemyAndScore.powerupName = "POWER UP ENEMIES";
         increaseEnemyAndScore.powerupDescription = "Enemies are stronger but earn more points when killed.";
-        increaseEnemyAndScore.effectAmount = new List<float>();
-        increaseEnemyAndScore.effectAmount.Add(1);
+        increaseEnemyAndScore.effects = "<color=#FF0000>+1 Enemy Size</color>\n<color=#00FF00>+ 5% more Power per kill</color>";
         powerups.Add(PowerupsEnum.IncreaseEnemySize, increaseEnemyAndScore);
+        
+        Powerup increaseMaxHP = new Powerup();
+        increaseMaxHP.powerupType = PowerupsEnum.IncreaseMaxHPAndHeal;
+        increaseMaxHP.powerupName = "POWER UP HEALTH";
+        increaseMaxHP.powerupDescription = "Increases your Max HP and heals you to full."; 
+        increaseMaxHP.effects = "<color=#00FF00>-0.1 Punch Charge Time</color>";
+        powerups.Add(PowerupsEnum.IncreaseMaxHPAndHeal, increaseMaxHP);
     }
     
     public void FreezeTime()
@@ -120,20 +122,12 @@ public class PowerupManager : MonoBehaviour
             Powerup powerup = powerupsToSpawn[i];
             powerupCanvasObj.nameText.text = powerup.powerupName;
             powerupCanvasObj.descriptionText.text = powerup.powerupDescription;
+            powerupCanvasObj.statsText.text = powerup.effects;
+            
+            if(powerup.sprite!=null)
+                powerupCanvasObj.buttonImage.sprite = powerup.sprite;
             
             powerupCanvasObj.button.onClick.AddListener(() => AddPowerup(powerup));
-            
-            string result = "";
-            if (powerup.effectAmount.Count > 0)
-            {
-                foreach (float value in powerup.effectAmount)
-                {
-                    string sign = value >= 0 ? "+" : "-";
-                    result += $"{sign}{value:F2}\n";
-                }
-            }
-
-            powerupCanvasObj.statsText.text = result;
             
             newObj.SetActive(true);
         }
@@ -151,7 +145,7 @@ public class PowerupManager : MonoBehaviour
             increaseMinimap.powerupType = PowerupsEnum.IncreaseMinimap;
             increaseMinimap.powerupName = "INCREASE MINIMAP";
             increaseMinimap.powerupDescription = "Increases the range and size of your minimap.";
-            increaseMinimap.effectAmount = new List<float>();
+            increaseMinimap.effects = "<color=#00FF00>+20 Minimap Range\n+1.1% Minimap Size</color>";
             powerups.Add(PowerupsEnum.IncreaseMinimap, increaseMinimap);
         }
     }
@@ -178,7 +172,6 @@ public class PowerupManager : MonoBehaviour
         isPaused = false;
         Reset();
         powerupCanvasObj.SetActive(false);
-        
         powerGaugeObj.SetActive(true);
         leftArmSliderObj.SetActive(true);
         rightArmSliderObj.SetActive(true);

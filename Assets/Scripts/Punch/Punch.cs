@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -114,26 +115,26 @@ public class Punch : MonoBehaviour
         }
     }
 
-    void SwingPunch(float time, bool input)
+    void SwingPunch(float time, bool leftRight)
     {
         bool isPerfectPunch = time >= minSweetTime && time <= maxSweetTime;
         
-        int punchDmg = input ? rightArmDmg : leftArmDmg;
-        float punchForce = input ? rightArmPunchForce : leftArmPunchForce;
+        int punchDmg = leftRight ? rightArmDmg : leftArmDmg;
+        float punchForce = leftRight ? rightArmPunchForce : leftArmPunchForce;
     
         if (isPerfectPunch)
         {
             sphereRadius = sweetPunchRadius;
-            StartCoroutine(SwingPunchCoro(input, punchDmg, punchForce, true));
+            StartCoroutine(SwingPunchCoro(leftRight, punchDmg, punchForce, true));
         }
         else
         {
-            AnnounceLeftRightFail?.Invoke(input);
+            AnnounceLeftRightFail?.Invoke(leftRight);
             return;
         }
 
         // Add punch duration here later
-        AnnounceLeftRightPunch?.Invoke(input);
+        AnnounceLeftRightPunch?.Invoke(leftRight);
     }
 
     public IEnumerator SwingPunchCoro(bool input, int newAttackDamage, float newAttackForce, bool isPerfectPunch)
@@ -143,12 +144,12 @@ public class Punch : MonoBehaviour
         while (counter < numberOfPunchFrames)
         {
             counter++;
-            PerformOverlapSphere(input, newAttackDamage, newAttackForce, isPerfectPunch);
+            PerformOverlapSphere(input, newAttackDamage, newAttackForce);
             yield return new WaitForFixedUpdate();
         }
     }
 
-    public void PerformOverlapSphere(bool input, int newAttackDamage, float newAttackForce, bool isPerfectPunch)
+    public void PerformOverlapSphere(bool input, int newAttackDamage, float newAttackForce)
     {
         Transform punchTransform = input ? leftPunchTransform : rightPunchTransform;
 
@@ -156,32 +157,36 @@ public class Punch : MonoBehaviour
 
         int hitCount = Physics.OverlapSphereNonAlloc(sphereCenter, sphereRadius, colliders, layerMask);
 
+        List<GameObject> objList = new List<GameObject>();
+
         for (int i = 0; i < hitCount; i++)
         {
-            HealthComponent health = colliders[i].GetComponent<HealthComponent>();
+            if(!objList.Contains(colliders[i].gameObject))
+                objList.Add(colliders[i].gameObject);
+        }
+        
+        if(hitCount>0)
+                AnnouncePerfectPunch?.Invoke(input);
+
+        foreach (GameObject obj in objList)
+        {
+            HealthComponent health = obj.GetComponent<HealthComponent>();
             if (health != null)
             {
                 health.ChangeHP(newAttackDamage);
-
-                if (isPerfectPunch)
+                Rigidbody rb = obj.GetComponent<Rigidbody>();
+                if (rb != null)
                 {
-                    AnnouncePerfectPunch?.Invoke(input);
-                    // Debug.Log("Perfect punch");
-                }
-            }
+                    Vector3 pushDirection = gameObject.transform.position - punchTransform.position;
+                    pushDirection.Normalize();
+                    Vector3 finalDirection = new Vector3(pushDirection.x, 0, pushDirection.z);
+                    rb.AddForce(finalDirection * newAttackForce, ForceMode.Impulse);
 
-            Rigidbody rb = colliders[i].GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                Vector3 pushDirection = colliders[i].transform.position - punchTransform.position;
-                pushDirection.Normalize();
-                Vector3 finalDirection = new Vector3(pushDirection.x, 1, pushDirection.z);
-                rb.AddForce(finalDirection * newAttackForce, ForceMode.Impulse);
-        
-                flingAndRotate = SingletonTools.Instance.flingAndRotate;
-                flingAndRotate.Explode(rb);
-        
-                SingletonTools.Instance.powerGauge.IncreasePower();
+                    flingAndRotate = SingletonTools.Instance.flingAndRotate;
+                    flingAndRotate.Explode(rb, newAttackForce);
+
+                    SingletonTools.Instance.powerGauge.IncreasePower();
+                }
             }
         }
     }

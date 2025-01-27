@@ -7,5 +7,6 @@ public enum PowerupsEnum
     IncreaseSweetTime,
     IncreaseEnemySize,
     AddMiniMap,
-    IncreaseMinimap
+    IncreaseMinimap,
+    IncreaseMaxHPAndHeal
 }

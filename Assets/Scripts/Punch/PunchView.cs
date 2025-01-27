@@ -7,8 +7,9 @@ public class PunchView : MonoBehaviour
     public Punch punch;
 
     public float waitTime;
-
-    public ParticleSystem explosionParticle;
+    
+    public ParticleSystem explosionParticleLeft;
+    public ParticleSystem explosionParticleRight;
 
     public Animator leftArmController;
     public Animator rightArmController;
@@ -18,11 +19,6 @@ public class PunchView : MonoBehaviour
 
     public Slider leftSlider;
     public Slider rightSlider;
-
-    public Transform explosionTransform;
-    
-    public Transform leftPunchTransform;
-    public Transform rightPunchTransform;
     
     void Start()
     {
@@ -35,11 +31,9 @@ public class PunchView : MonoBehaviour
     private void PlayExplosion(bool input)
     {
         if (input)
-            explosionTransform.position = leftPunchTransform.position;
+            explosionParticleLeft.Play();
         else
-            explosionTransform.position = rightPunchTransform.position;
-            
-        explosionParticle.Play();
+            explosionParticleRight.Play();
     }
     
     private void SetTimer(bool input, float timer)

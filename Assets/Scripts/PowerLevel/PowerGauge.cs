@@ -9,14 +9,17 @@ public class PowerGauge : MonoBehaviour
 
     public float numberOfMultipliers=1;
     public int maxNumberOfMultipliers = 30;
-
-    
     
     public bool powerIncreasing=false;
 
     private IEnumerator addPowerCoro;
     
+    public int currentLevel = 1;
+    public int powerRequiredToLevelUp;
+    
     public event Action<int> AnnouncePowerLevel;
+
+    public event Action AnnounceLevelUp;
 
     void Start()
     {
@@ -69,28 +72,29 @@ public class PowerGauge : MonoBehaviour
 
             currentPower += (int)increment;
             
-            int displayPower = currentPower;
-
-            if (multiplierGroup >= 1)  // For values 10 and higher
-            {
-                // Generate a random digit between 0 and 9 for each decimal place
-                int randomDecimals = 0;
-                for (int i = 0; i < multiplierGroup; i++)
-                {
-                    randomDecimals = randomDecimals * 10 + UnityEngine.Random.Range(0, 10);  // Build up the random number
-                }
-                displayPower = currentPower * 10 + randomDecimals;  // Shift decimal place and add random digits
-            }
-            
             yield return new WaitForSeconds(1f / numberOfMultipliers);
-            AnnouncePowerLevel?.Invoke(displayPower);
+            AnnouncePowerLevel?.Invoke(currentPower);
+            
+            if (currentPower >= powerRequiredToLevelUp)
+            {
+                LevelUp();
+            }
         }
         
         if(currentPower > desiredPowerLevel)
             currentPower = desiredPowerLevel;
 
         AnnouncePowerLevel?.Invoke(currentPower);
-        numberOfMultipliers = 1;
         powerIncreasing = false;
+    }
+
+    private void LevelUp()
+    {
+        currentLevel += 10;
+        currentPower -= powerRequiredToLevelUp;
+
+        int killsNeededForNextLevel = 5 * currentLevel * 2;
+        powerRequiredToLevelUp = killsNeededForNextLevel * 1420;
+        AnnounceLevelUp?.Invoke();
     }
 }

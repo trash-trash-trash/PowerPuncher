@@ -1,11 +1,14 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PowerGaugeView : MonoBehaviour
 {
     public PowerGauge powerGauge;
     public TMP_Text powerText;
+
+    public Slider powerSlider;
   
     public float shakeAmount;
 
@@ -43,6 +46,10 @@ public class PowerGaugeView : MonoBehaviour
     private void SetText(int powerLevel)
     {
         powerText.text = "POWER LEVEL: "+powerLevel.ToString("N0");
+        
+        float progressPercent = (float)powerLevel / powerGauge.powerRequiredToLevelUp * 100f;
+        powerSlider.maxValue = 100;
+        powerSlider.value = progressPercent;
     }
 
     void OnDisable()

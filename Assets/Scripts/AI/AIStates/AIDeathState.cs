@@ -12,8 +12,8 @@ public class AIDeathState : AIStateBase
     public override void OnEnable()
     {
         base.OnEnable();
+        aiBrain.HP.hpData.canTakeDamage = false;
         agent.enabled = false;
-
         StartCoroutine(WaitToDespawn());
     }
 

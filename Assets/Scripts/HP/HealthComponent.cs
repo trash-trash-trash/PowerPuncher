@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [Serializable]
@@ -20,6 +21,13 @@ public class HealthComponent : MonoBehaviour
     void OnEnable()
     {
         hpData = new HealthData();
+        StartCoroutine(HackWait());
+    }
+
+    IEnumerator HackWait()
+    {
+        yield return new WaitForFixedUpdate();
+        
         Rez();
     }
 
@@ -28,6 +36,13 @@ public class HealthComponent : MonoBehaviour
         hpData.maxHP = maxHP;
         hpData.canTakeDamage = true;
         ChangeHP(hpData.maxHP);
+    }
+
+    public void ChangeMaxHP(int maxHP)
+    {
+        hpData.maxHP = maxHP;
+        hpData.currentHP = hpData.maxHP;
+        AnnounceHP?.Invoke(hpData);
     }
     
     public void ChangeHP(int amount)

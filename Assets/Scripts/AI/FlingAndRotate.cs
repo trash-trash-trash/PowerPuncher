@@ -10,18 +10,17 @@ public class FlingAndRotate : MonoBehaviour
     public Vector3 direction;
     public Vector3 spinDirection;
 
-    public void Explode(Rigidbody newRb)
+    public void Explode(Rigidbody newRb, float force)//, Vector3 pushDirection, float pushForce)
     {
         rb = newRb;
         
         rb.constraints = RigidbodyConstraints.None;
-
-        /*direction = new Vector3(0, 0, 0);
-        direction.x = RandomBetween1And3();
-        direction.z = RandomBetween1And3();
         
-        rb.AddForce(direction * horizontalForce);*/
-
+        /*pushDirection.Normalize();
+        Vector3 finalDirection = new Vector3(pushDirection.x, 1, pushDirection.z);
+        rb.AddForce(finalDirection * pushForce, ForceMode.VelocityChange);*/
+        rb.AddForce(Vector3.up * force, ForceMode.Impulse);
+        
         Rotate();
     }
 

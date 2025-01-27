@@ -11,6 +11,7 @@ public class AIBrain : MonoBehaviour
     public GameObject spawnObj;
     public GameObject walkObj;
     public GameObject growShrinkObj;
+    public GameObject attackObj;
     public GameObject dieObj;
 
     public Dictionary<AIStates, GameObject> AIStatesDict = new Dictionary<AIStates, GameObject>();
@@ -26,6 +27,7 @@ public class AIBrain : MonoBehaviour
             AIStatesDict.Add(AIStates.Spawn, spawnObj);
             AIStatesDict.Add(AIStates.WalkToPlayer, walkObj);
             AIStatesDict.Add(AIStates.GrowShrink, growShrinkObj);
+            AIStatesDict.Add(AIStates.Attack, attackObj);
             AIStatesDict.Add(AIStates.Die, dieObj);
 
             //hack?

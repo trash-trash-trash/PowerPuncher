@@ -6,6 +6,10 @@ using UnityEngine.UI;
 public class PlayerPowerupMiddleman : MonoBehaviour
 {
     public PowerupManager powerup;
+
+    public HealthComponent playerHP;
+
+    public UIGrow HPSliderRect;
     
     public Punch punch;
     public MoveForward movement;
@@ -18,6 +22,10 @@ public class PlayerPowerupMiddleman : MonoBehaviour
     public RectTransform rightArmImage;
 
     public float maxSpeedIncrement=5;
+
+    public UIGrow miniMapUI;
+    public UIGrow leftArmUI;
+    public UIGrow rightArmUI;
 
     private Dictionary<PowerupsEnum, Action> powerupActions;
 
@@ -33,7 +41,8 @@ public class PlayerPowerupMiddleman : MonoBehaviour
             { PowerupsEnum.IncreaseSweetTime, IncreaseSweetTime },
             { PowerupsEnum.IncreaseEnemySize , IncreaseEnemySize},
             { PowerupsEnum.AddMiniMap , AddMinimap},
-            { PowerupsEnum.IncreaseMinimap , IncreaseMinimap}
+            { PowerupsEnum.IncreaseMinimap , IncreaseMinimap},
+            { PowerupsEnum.IncreaseMaxHPAndHeal , IncreaseMaxHPAndHeal}
         };
         powerup.AnnouncePowerup += ApplyPowerup;
     }
@@ -45,8 +54,8 @@ public class PlayerPowerupMiddleman : MonoBehaviour
 
     public void IncreaseMinimap()
     {
-        miniMapRect.localScale *= 1.01f;
-        miniMapCamera.orthographicSize ++;
+        miniMapUI.Grow();
+        miniMapCamera.orthographicSize += 5;
     }
 
     public void IncreaseEnemySize()
@@ -89,15 +98,23 @@ public class PlayerPowerupMiddleman : MonoBehaviour
 
     public void IncreaseLeftArm()
     { 
-        leftArmImage.localScale *= 1.1f;
-        punch.leftArmDmg -= 20; 
-        punch.leftArmPunchForce += 20f;
+        leftArmUI.Grow();
+        punch.leftArmDmg -= 5; 
+        punch.leftArmPunchForce += 5f;
     }
 
     public void IncreaseRightArm()
     {
-        rightArmImage.localScale *= 1.1f;
-        punch.rightArmDmg -= 20;
-        punch.rightArmPunchForce += 20f;
+        rightArmUI.Grow();
+        punch.rightArmDmg -= 5;
+        punch.rightArmPunchForce += 5f;
+    }
+
+    public void IncreaseMaxHPAndHeal()
+    {
+        int maxHP = playerHP.maxHP += 100;
+        
+        playerHP.ChangeMaxHP(maxHP);
+        HPSliderRect.Grow();
     }
 }
