@@ -7,11 +7,12 @@ public class AIDeathState : AIStateBase
     
     public FlingAndRotate flingAndRotate;
 
-    public CapsuleCollider collider;
+    public CapsuleCollider capCollider;
     
     public override void OnEnable()
     {
         base.OnEnable();
+        SingletonTools.Instance.powerGauge.IncreasePower(aiBrain.waveCount);
         aiBrain.HP.hpData.canTakeDamage = false;
         agent.enabled = false;
         StartCoroutine(WaitToDespawn());
@@ -20,9 +21,8 @@ public class AIDeathState : AIStateBase
     private IEnumerator WaitToDespawn()
     {
         yield return new WaitForSeconds(5);
-        collider = GetComponentInParent<CapsuleCollider>();
-        collider.isTrigger = true;
-        
+        capCollider = GetComponentInParent<CapsuleCollider>();
+        capCollider.isTrigger = true;
         yield return new WaitForSeconds(5);
         aiBrain.gameObject.SetActive(false);
     }

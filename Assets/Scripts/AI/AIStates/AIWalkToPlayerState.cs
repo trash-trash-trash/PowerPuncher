@@ -18,8 +18,20 @@ public class AIWalkToPlayerState : AIStateBase
     public override void OnEnable()
     {
         base.OnEnable();
-        playerTrans = PlayerSingleton.Instance.playerCapsule.transform;
+
+        minDist = 1.5f * aiBrain.transform.localScale.x;
+
+        playerTrans = aiBrain.playerTransform;
+        
         agent.enabled = true;
+        agent.radius = 0.5f +  0.1f * aiBrain.transform.localScale.x;
+        
+        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 10, NavMesh.AllAreas))
+        {
+            transform.position = hit.position; 
+            agent.Warp(hit.position);
+        }
+
         rb = GetComponentInParent<Rigidbody>();
     }
 

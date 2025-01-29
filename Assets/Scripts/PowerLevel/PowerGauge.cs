@@ -26,10 +26,10 @@ public class PowerGauge : MonoBehaviour
         addPowerCoro = AddMotherfuckingPower();
     }
 
-    public void IncreasePower()
+    public void IncreasePower(int multiplier)
     {
         int random = UnityEngine.Random.Range(420, 1420);
-        ChangePower(random);
+        ChangePower(random * multiplier);
     }
     
     public void ChangePower(int input)
@@ -46,6 +46,7 @@ public class PowerGauge : MonoBehaviour
             if (powerIncreasing)
             {
                 StopCoroutine(addPowerCoro);
+                StartCoroutine(AddMultiplier());
                 numberOfMultipliers++;
                 addPowerCoro = AddMotherfuckingPower();
                 StartCoroutine(addPowerCoro);
@@ -56,6 +57,15 @@ public class PowerGauge : MonoBehaviour
                 StartCoroutine(addPowerCoro);
             }
         }
+    }
+
+    IEnumerator AddMultiplier()
+    {
+        yield return new WaitForSeconds(20f);
+        numberOfMultipliers--;
+
+        if (numberOfMultipliers <= 0)
+            numberOfMultipliers = 0;
     }
 
     public IEnumerator AddMotherfuckingPower()

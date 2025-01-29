@@ -29,7 +29,7 @@ public class MinimapComponent : MonoBehaviour
                 spr.color = Color.blue;
                 break;
             case MinimapType.Objective:
-                spr.color = Color.yellow;
+                spr.color = Color.magenta;
                 break;
             case MinimapType.Environment:
                 spr.color = Color.black;

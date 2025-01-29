@@ -5,14 +5,20 @@ using UnityEngine;
 public class AIBrain : MonoBehaviour
 {
     public AIStates currentState;
+
+    public Transform playerTransform;
+    
+    public int waveCount;
     
     public HealthComponent HP;
 
     public GameObject spawnObj;
+    public GameObject flyObj;
     public GameObject walkObj;
     public GameObject growShrinkObj;
     public GameObject attackObj;
     public GameObject dieObj;
+
 
     public Dictionary<AIStates, GameObject> AIStatesDict = new Dictionary<AIStates, GameObject>();
 
@@ -20,13 +26,16 @@ public class AIBrain : MonoBehaviour
     
     private bool initialized = false;
     
+    public event Action<AIStates> AnnounceAIState;
+    
     private void OnEnable()
     {
         if (!initialized)
         {
             AIStatesDict.Add(AIStates.Spawn, spawnObj);
-            AIStatesDict.Add(AIStates.WalkToPlayer, walkObj);
             AIStatesDict.Add(AIStates.GrowShrink, growShrinkObj);
+            AIStatesDict.Add(AIStates.FlyToEarth, flyObj);
+            AIStatesDict.Add(AIStates.WalkToPlayer, walkObj);
             AIStatesDict.Add(AIStates.Attack, attackObj);
             AIStatesDict.Add(AIStates.Die, dieObj);
 
@@ -50,6 +59,7 @@ public class AIBrain : MonoBehaviour
         {
             currentState = newState; 
             sm.ChangeState(AIStatesDict[currentState]);
+            AnnounceAIState?.Invoke(currentState);
         }
     }
 

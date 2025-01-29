@@ -21,11 +21,11 @@ public class PlayerPowerupMiddleman : MonoBehaviour
     public RectTransform leftArmImage;
     public RectTransform rightArmImage;
 
-    public float maxSpeedIncrement=5;
+    private float maxSpeedIncrement=50;
 
     public UIGrow miniMapUI;
-    public UIGrow leftArmUI;
-    public UIGrow rightArmUI;
+    public UIArmsGrow leftArmUI;
+    public UIArmsGrow rightArmUI;
 
     private Dictionary<PowerupsEnum, Action> powerupActions;
 
@@ -46,7 +46,7 @@ public class PlayerPowerupMiddleman : MonoBehaviour
         };
         powerup.AnnouncePowerup += ApplyPowerup;
     }
-
+    
     public void AddMinimap()
     {
         miniMapObj.SetActive(true);
@@ -100,21 +100,20 @@ public class PlayerPowerupMiddleman : MonoBehaviour
     { 
         leftArmUI.Grow();
         punch.leftArmDmg -= 5; 
-        punch.leftArmPunchForce += 5f;
     }
 
     public void IncreaseRightArm()
     {
         rightArmUI.Grow();
         punch.rightArmDmg -= 5;
-        punch.rightArmPunchForce += 5f;
     }
 
     public void IncreaseMaxHPAndHeal()
     {
+        HPSliderRect.Grow();
         int maxHP = playerHP.maxHP += 100;
         
         playerHP.ChangeMaxHP(maxHP);
-        HPSliderRect.Grow();
+        playerHP.ChangeHP(maxHP);
     }
 }

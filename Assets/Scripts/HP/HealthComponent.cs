@@ -41,11 +41,10 @@ public class HealthComponent : MonoBehaviour
     public void ChangeMaxHP(int maxHP)
     {
         hpData.maxHP = maxHP;
-        hpData.currentHP = hpData.maxHP;
         AnnounceHP?.Invoke(hpData);
     }
     
-    public void ChangeHP(int amount)
+    public virtual void ChangeHP(int amount)
     {
         if (amount <= 0 && !hpData.canTakeDamage)
             return;

@@ -24,6 +24,10 @@ public class PowerupManager : MonoBehaviour
     public Sprite increaseMinimapSprite;
     public Sprite increasePunchMaxSweetSprite;
     public Sprite decreasePunchMinSweetSprite;
+
+    public event Action AnnounceAllPowerupsAdded;
+    
+    public event Action<bool> AnnounceFreezeTime;
     
     public event Action<Powerup> AnnouncePowerup;
 
@@ -35,6 +39,7 @@ public class PowerupManager : MonoBehaviour
         addMinimap.powerupDescription = "Adds a minimap to your HUD.";
         addMinimap.effects = "<color=#00FF00>+1 Minimap</color>";
         addMinimap.sprite = addMinimapSprite;
+        addMinimap.numCharges = 1;
         powerups.Add(PowerupsEnum.AddMiniMap, addMinimap);
         
         Powerup increaseMovementSpeed = new Powerup();
@@ -46,6 +51,7 @@ public class PowerupManager : MonoBehaviour
 
         increaseMovementSpeed.effects = "<color=#00FF00>+5 Movement Speed\n+5 Acceleration</color>";
         increaseMovementSpeed.sprite = movementSprite;
+        increaseMovementSpeed.numCharges = 5;
         powerups.Add(PowerupsEnum.IncreaseMovementSpeed, increaseMovementSpeed);
         
         //change this to left/right
@@ -55,6 +61,7 @@ public class PowerupManager : MonoBehaviour
         decreaseChargeTime.powerupDescription = "Decreases your punches' minimum charge time, letting you punch faster.";
         decreaseChargeTime.effects = "<color=#00FF00>-0.1 Punch Charge Time</color>";
         decreaseChargeTime.sprite = decreasePunchMinSweetSprite;
+        decreaseChargeTime.numCharges = 8;
         powerups.Add(PowerupsEnum.DecreaseChargeTime, decreaseChargeTime);
         
         Powerup increaseSweetTime = new Powerup();
@@ -63,6 +70,7 @@ public class PowerupManager : MonoBehaviour
         increaseSweetTime.powerupDescription = "Increases your punches' sweet time, making it easier to land.";
         increaseSweetTime.effects = "<color=#00FF00>+0.1 Punch Max Sweet Time</color>";
         increaseSweetTime.sprite = increasePunchMaxSweetSprite;
+        increaseSweetTime.numCharges = 4;
         powerups.Add(PowerupsEnum.IncreaseSweetTime, increaseSweetTime);
         
         Powerup increaseEnemyAndScore = new Powerup();
@@ -70,13 +78,14 @@ public class PowerupManager : MonoBehaviour
         increaseEnemyAndScore.powerupName = "POWER UP ENEMIES";
         increaseEnemyAndScore.powerupDescription = "Enemies are stronger but earn more points when killed.";
         increaseEnemyAndScore.effects = "<color=#FF0000>+1 Enemy Size</color>\n<color=#00FF00>+ 5% more Power per kill</color>";
-        powerups.Add(PowerupsEnum.IncreaseEnemySize, increaseEnemyAndScore);
+       // powerups.Add(PowerupsEnum.IncreaseEnemySize, increaseEnemyAndScore);
         
         Powerup increaseMaxHP = new Powerup();
         increaseMaxHP.powerupType = PowerupsEnum.IncreaseMaxHPAndHeal;
         increaseMaxHP.powerupName = "POWER UP HEALTH";
         increaseMaxHP.powerupDescription = "Increases your Max HP and heals you to full."; 
         increaseMaxHP.effects = "<color=#00FF00>-0.1 Punch Charge Time</color>";
+        increaseSweetTime.numCharges = 10;
         powerups.Add(PowerupsEnum.IncreaseMaxHPAndHeal, increaseMaxHP);
     }
     
@@ -91,12 +100,26 @@ public class PowerupManager : MonoBehaviour
         rightArmSliderObj.SetActive(false);
         
         powerupCanvasObj.SetActive(true);
+        
+        AnnounceFreezeTime?.Invoke(isPaused);
+        
         Spawn();
     }
 
     void Spawn()
-    {
-        int twoOrThree = GetRandomTwoOrThree();
+    {    
+        if (powerups.Count == 0)
+        {
+            AnnounceAllPowerupsAdded?.Invoke();
+            return;
+        }
+
+        int twoOrThree = 0;
+        if (powerups.Count < 3)
+            twoOrThree = powerups.Count;
+       
+        else
+            twoOrThree = GetRandomTwoOrThree();
         
         powerupList.Clear();
 
@@ -148,6 +171,10 @@ public class PowerupManager : MonoBehaviour
             increaseMinimap.effects = "<color=#00FF00>+20 Minimap Range\n+1.1% Minimap Size</color>";
             powerups.Add(PowerupsEnum.IncreaseMinimap, increaseMinimap);
         }
+        
+        powerup.numCharges--;
+        if (powerup.numCharges <= 0)
+            powerups.Remove(powerup.powerupType);
     }
 
     public void Reset()
@@ -170,10 +197,13 @@ public class PowerupManager : MonoBehaviour
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
         isPaused = false;
+        
         Reset();
         powerupCanvasObj.SetActive(false);
         powerGaugeObj.SetActive(true);
         leftArmSliderObj.SetActive(true);
         rightArmSliderObj.SetActive(true);
+        
+        AnnounceFreezeTime?.Invoke(isPaused);
     }
 }

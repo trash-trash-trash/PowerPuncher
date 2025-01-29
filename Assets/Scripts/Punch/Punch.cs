@@ -8,11 +8,11 @@ public class Punch : MonoBehaviour
 {
     public PlayerControls playerControls;
 
+    public float punchForce;
+    
     public int rightArmDmg;
-    public float rightArmPunchForce;
     
     public int leftArmDmg;
-    public float leftArmPunchForce;
     
     public float leftTimer;
     public bool chargingLeftPunch;
@@ -38,6 +38,8 @@ public class Punch : MonoBehaviour
     private FlingAndRotate flingAndRotate;
     
     private Collider[] colliders = new Collider[50];
+
+    public Transform playerTransform;
 
     public event Action<bool> AnnounceLeftRightFail;
 
@@ -120,12 +122,11 @@ public class Punch : MonoBehaviour
         bool isPerfectPunch = time >= minSweetTime && time <= maxSweetTime;
         
         int punchDmg = leftRight ? rightArmDmg : leftArmDmg;
-        float punchForce = leftRight ? rightArmPunchForce : leftArmPunchForce;
     
         if (isPerfectPunch)
         {
             sphereRadius = sweetPunchRadius;
-            StartCoroutine(SwingPunchCoro(leftRight, punchDmg, punchForce, true));
+            StartCoroutine(SwingPunchCoro(leftRight, punchDmg, punchForce));
         }
         else
         {
@@ -137,7 +138,7 @@ public class Punch : MonoBehaviour
         AnnounceLeftRightPunch?.Invoke(leftRight);
     }
 
-    public IEnumerator SwingPunchCoro(bool input, int newAttackDamage, float newAttackForce, bool isPerfectPunch)
+    public IEnumerator SwingPunchCoro(bool input, int newAttackDamage, float newAttackForce)
     {
         int counter = 0;
 
@@ -148,7 +149,7 @@ public class Punch : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
     }
-
+    
     public void PerformOverlapSphere(bool input, int newAttackDamage, float newAttackForce)
     {
         Transform punchTransform = input ? leftPunchTransform : rightPunchTransform;
@@ -170,23 +171,17 @@ public class Punch : MonoBehaviour
 
         foreach (GameObject obj in objList)
         {
-            HealthComponent health = obj.GetComponent<HealthComponent>();
+            AIHP health = obj.GetComponent<AIHP>();
             if (health != null)
             {
+                Vector3 pushDirection =  obj.transform.position -playerTransform.position;
+                pushDirection.Normalize();
+                Vector3 finalDirection = new Vector3(pushDirection.x, 1, pushDirection.z);
+
+                health.pushDirection = finalDirection;
+                health.pushForce = newAttackForce;
+                
                 health.ChangeHP(newAttackDamage);
-                Rigidbody rb = obj.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    Vector3 pushDirection = gameObject.transform.position - punchTransform.position;
-                    pushDirection.Normalize();
-                    Vector3 finalDirection = new Vector3(pushDirection.x, 0, pushDirection.z);
-                    rb.AddForce(finalDirection * newAttackForce, ForceMode.Impulse);
-
-                    flingAndRotate = SingletonTools.Instance.flingAndRotate;
-                    flingAndRotate.Explode(rb, newAttackForce);
-
-                    SingletonTools.Instance.powerGauge.IncreasePower();
-                }
             }
         }
     }

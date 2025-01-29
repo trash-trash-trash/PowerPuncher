@@ -5,41 +5,53 @@ using UnityEngine;
 public class AISpawner : MonoBehaviour
 {
    public Transform centerTransform;
+   public Transform playerTransform;
    public GameObject AIPrefab;
+   public GameObject HPPrefab;
    
    public float minSpawnRadius;
    public float maxSpawnRadius;
 
-   public List<GameObject> pooledObjects = new List<GameObject>();
+   public List<GameObject> pooledAIObjects = new List<GameObject>();
    public int poolSize = 10;
+   
+   public List<GameObject> pooledHPObjects = new List<GameObject>();
 
+   private float yOffset = 100;
+   
    public int numberToSpawn=0;
 
+   public int waveCount = 1;
+
+   private bool spawningLevelOne = false;
+   
    void Start()
    {
       for (int i = 0; i < poolSize; i++)
       {
          GameObject pooledObj = Instantiate(AIPrefab);
          pooledObj.SetActive(false);
-         pooledObjects.Add(pooledObj);
+         pooledAIObjects.Add(pooledObj);
          pooledObj.transform.parent = transform;
       }
-
+      spawningLevelOne = true;
       StartCoroutine(SpawnLoop());
    }
 
    public IEnumerator SpawnLoop()
    {
-      while (true)
+      while (spawningLevelOne)
       {
          numberToSpawn++;
-
+         if(numberToSpawn % 5 == 0)
+            waveCount++;
+         
          for (int i = 0; i < numberToSpawn; i++)
          {
             SpawnInCircle();
          }
 
-         yield return new WaitForSeconds(5f);
+         yield return new WaitForSeconds(waveCount);
       }
    }
 
@@ -54,39 +66,81 @@ public class AISpawner : MonoBehaviour
          Mathf.Sin(angle) * radius
       );
 
+      float randomDistance = Random.Range(100f, 500f);
+
       Vector3 spawnPosition = new Vector3(
          centerTransform.position.x + randomPosition.x,
-         centerTransform.position.y,
+         centerTransform.position.y + yOffset + randomDistance * waveCount,
          centerTransform.position.z + randomPosition.y
       );
-      
-      GameObject spawnedObj = GetPooledObject();
 
-      if (spawnedObj != null)
+      bool chance = OneInTenChance();
+
+      if (!chance)
       {
-         spawnedObj.transform.position = spawnPosition;
-         spawnedObj.SetActive(true);
+         GameObject spawnedObj = GetPooledAIObject();
 
-         AIBrain brain = spawnedObj.GetComponent<AIBrain>();
-         brain.ChangeState(AIStates.Spawn);
+         if (spawnedObj != null)
+         {
+            spawnedObj.transform.position = spawnPosition;
+            spawnedObj.SetActive(true);
+
+            AIBrain brain = spawnedObj.GetComponent<AIBrain>();
+            brain.playerTransform = playerTransform;
+            brain.waveCount = waveCount;
+            brain.ChangeState(AIStates.GrowShrink);
+         }
+      }
+      else
+      {
+         GameObject spawnedObj = GetPooledHPObject();
+         if (spawnedObj != null)
+         {
+            spawnedObj.transform.position = spawnPosition;
+            spawnedObj.SetActive(true);
+            
+            MoveToGround moveToGround = spawnedObj.GetComponent<MoveToGround>();
+            moveToGround.FlipMovingToGround(true);
+            
+            HPPickup pick = spawnedObj.GetComponent<HPPickup>();
+            pick.multiplier = waveCount;
+         }
       }
    }
 
-   //get an object from the pool
-   private GameObject GetPooledObject()
+   bool OneInTenChance()
+   {
+      return Random.Range(0, 100/waveCount) == 0;
+   }
+
+   private GameObject GetPooledAIObject()
    {
       //find the first inactive object in the pool
-      for (int i = 0; i < pooledObjects.Count; i++)
+      for (int i = 0; i < pooledAIObjects.Count; i++)
       {
-         if (!pooledObjects[i].activeInHierarchy)
+         if (!pooledAIObjects[i].activeInHierarchy)
          {
-            return pooledObjects[i];
+            return pooledAIObjects[i];
          }
       }
 
-      GameObject newObj = Instantiate(AIPrefab);
-      newObj.transform.parent = transform;
-      pooledObjects.Add(newObj);
+      GameObject newObj = Instantiate(AIPrefab, transform);
+      pooledAIObjects.Add(newObj);
+      return newObj;
+   }
+   
+   private GameObject GetPooledHPObject()
+   {
+      for (int i = 0; i < pooledHPObjects.Count; i++)
+      {
+         if (!pooledHPObjects[i].activeInHierarchy)
+         {
+            return pooledHPObjects[i];
+         }
+      }
+
+      GameObject newObj = Instantiate(HPPrefab, transform);
+      pooledHPObjects.Add(newObj);
       return newObj;
    }
 }

@@ -3,31 +3,32 @@ using UnityEngine;
 
 public class AISpawnState : AIStateBase
 {
+    private Rigidbody rb;
     public override void OnEnable()
     {
         base.OnEnable();
-        Reset();
-    }
-
-    void Reset()
-    {
-        Rigidbody rb = GetComponentInParent<Rigidbody>();
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
-        rb.constraints = RigidbodyConstraints.FreezeRotationX;
-        
-        CapsuleCollider collider = GetComponentInParent<CapsuleCollider>();
-        collider.isTrigger = false;
-        
-        aiBrain.HP.Rez();
-
+        rb = GetComponentInParent<Rigidbody>();
         StartCoroutine(HackWait());
     }
-
+    
     IEnumerator HackWait()
     {
-        yield return new WaitForFixedUpdate();
-        aiBrain.ChangeState(AIStates.WalkToPlayer);
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+        yield return new WaitForFixedUpdate();   
+        Reset();
+    }
+    
+    void Reset()
+    {
+        rb.constraints = RigidbodyConstraints.None;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX;
+       
+        aiBrain.HP.Rez(); 
+        CapsuleCollider collider = GetComponentInParent<CapsuleCollider>(); 
+        collider.isTrigger = false;
+        aiBrain.ChangeState(AIStates.FlyToEarth);
     }
 }

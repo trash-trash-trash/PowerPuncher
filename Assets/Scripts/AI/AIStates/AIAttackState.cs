@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AIAttackState : AIStateBase
 {
-    public int sphereRadius = 3;
+    private float sphereRadius = 1;
     
     public LayerMask layerMask;
     
@@ -12,8 +12,9 @@ public class AIAttackState : AIStateBase
     public override void OnEnable()
     {
         base.OnEnable();
-        
 
+        sphereRadius = 1.5f * aiBrain.transform.localScale.x;
+        
         StartCoroutine(HackWait());
     }
 
@@ -23,8 +24,11 @@ public class AIAttackState : AIStateBase
         
         PerformOverlapSphere();
 
-        yield return new WaitForFixedUpdate();
-        aiBrain.HP.ChangeHP(-999);
+        float randSecond = Random.Range(.1f, 2.5f);
+        
+        yield return new WaitForSeconds(randSecond);
+        
+        aiBrain.ChangeState(AIStates.WalkToPlayer);
     }
     
     public void PerformOverlapSphere()
@@ -35,11 +39,16 @@ public class AIAttackState : AIStateBase
 
         for (int i = 0; i < hitCount; i++)
         {
-            HealthComponent health = colliders[i].GetComponentInParent<HealthComponent>();
+            PlayerHP health = colliders[i].GetComponentInParent<PlayerHP>();
             if (health != null)
             {
-                health.ChangeHP(-10);
+                health.ChangeHP(-10 * aiBrain.waveCount);
             }
         }
+    }
+
+    void OnDisable()
+    {
+        StopAllCoroutines();
     }
 }
