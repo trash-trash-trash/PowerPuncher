@@ -6,6 +6,8 @@ public class AIBrain : MonoBehaviour
 {
     public AIStates currentState;
 
+    public PowerGauge pwrGge;
+
     public Transform playerTransform;
     
     public int waveCount;

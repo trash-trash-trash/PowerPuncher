@@ -12,6 +12,10 @@ public class ArmKillCounter : MonoBehaviour
     public int leftArmNextLevelUpCounter = 1;
     public int rightArmNextLevelUpCounter = 1;
 
+    private float killCap = 50;
+    private int killMultiplierNormal = 2;
+    private int killMultiplierAfterCap = 1;
+
     void Start()
     {
         punch.AnnouncePerfectPunch += IncreaseKillCount;
@@ -31,12 +35,23 @@ public class ArmKillCounter : MonoBehaviour
     {
         if (leftArmKillCounter >= leftArmNextLevelUpCounter)
         {
-            leftArmNextLevelUpCounter *= 2;
+            int multiplier = 2;
+            if (leftArmKillCounter > killMultiplierAfterCap)
+                multiplier = killMultiplierNormal;
+            else
+                multiplier = killMultiplierAfterCap;
+                
+            leftArmNextLevelUpCounter *= multiplier;
             powerupMiddleman.IncreaseLeftArm();
         }
         else if (rightArmKillCounter >= rightArmNextLevelUpCounter)
-        {
-            rightArmNextLevelUpCounter *= 2;
+        {  
+                int multiplier = 2;
+                if (rightArmKillCounter > killMultiplierAfterCap)
+                    multiplier = killMultiplierNormal;
+                else
+                    multiplier = killMultiplierAfterCap;
+            rightArmNextLevelUpCounter *= multiplier;
             powerupMiddleman.IncreaseRightArm();
         }
     }

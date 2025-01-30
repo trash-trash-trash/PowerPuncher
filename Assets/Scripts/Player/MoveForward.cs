@@ -8,10 +8,10 @@ public class MoveForward : MonoBehaviour
     public float rotationSpeed;
 
     public PlayerControls controls;
-
     public Transform playerTransform;
-    
-    public Vector2 inputVector2;
+
+    private Vector2 inputVector2;
+    private Vector3 lastMousePosition;
 
     void OnEnable()
     {
@@ -20,53 +20,52 @@ public class MoveForward : MonoBehaviour
 
     private void SetInputVector2(Vector2 newInputVector)
     {
-        if (newInputVector.x > 0)
-            newInputVector.x = 1;
-        else if (newInputVector.x < 0)
-            newInputVector.x = -1;
-        if(newInputVector.y > 0)
-            newInputVector.y = 1;
-        else if (newInputVector.y < 0)
-            newInputVector.y = -1;
-        
-        inputVector2 = newInputVector;
+        inputVector2 = new Vector2(
+            Mathf.Clamp(newInputVector.x, -1, 1),  // Clamp X-axis input
+            Mathf.Clamp(newInputVector.y, -1, 1)   // Clamp Y-axis input
+        );
     }
+
     void FixedUpdate()
+    {
+        if (inputVector2 != Vector2.zero)
         {
-            if (inputVector2 != Vector2.zero)
-            {
-               MoveForwardBack();
-               RotateLeftRight();
-            } 
+            Move();
         }
 
-    void MoveForwardBack()
-    {
-        // Move forward/backward based on the Y-axis input
-        Vector3 direction = playerTransform.forward * inputVector2.y; // Use Z-axis for forward movement
-        Vector3 force = direction * acceleration * Time.fixedDeltaTime;
+        RotateWithMouse();
+    }
 
+    void Move()
+    {
+        // Move forward/backward (Z-axis) and strafe left/right (X-axis)
+        Vector3 moveDirection = (playerTransform.forward * inputVector2.y) +
+                                (playerTransform.right * inputVector2.x);
+        
+        Vector3 force = moveDirection * acceleration * Time.fixedDeltaTime;
         rb.AddForce(force, ForceMode.Acceleration);
 
-        // Clamp the velocity to max speed
+        // Clamp velocity to max speed
         if (rb.linearVelocity.magnitude > maxSpeed)
         {
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         }
     }
 
-    void RotateLeftRight()
+    void RotateWithMouse()
     {
-        // Rotate around the Y-axis based on the X-axis input
-        float rotation = inputVector2.x * rotationSpeed * Time.fixedDeltaTime;
-
-        // Apply torque for smooth rotation
-        rb.AddTorque(Vector3.up * rotation, ForceMode.Acceleration);
-
-        // Limit angular velocity (optional for better control)
-        if (rb.angularVelocity.magnitude > maxSpeed)
+        if (Time.timeScale > 0f)
         {
-            rb.angularVelocity = rb.angularVelocity.normalized * maxSpeed;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false; // Hide cursor
+
+            // Get mouse delta movement
+            float mouseX = Input.GetAxis("Mouse X"); // Gets movement relative to last frame
+
+            // Rotate around Y-axis
+            float rotation = mouseX * rotationSpeed * Time.fixedDeltaTime;
+            Quaternion newRotation = Quaternion.Euler(0, rotation, 0) * rb.rotation;
+            rb.MoveRotation(newRotation);
         }
     }
 }

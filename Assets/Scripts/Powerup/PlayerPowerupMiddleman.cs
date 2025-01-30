@@ -99,13 +99,13 @@ public class PlayerPowerupMiddleman : MonoBehaviour
     public void IncreaseLeftArm()
     { 
         leftArmUI.Grow();
-        punch.leftArmDmg -= 5; 
+        punch.leftArmDmg -= 100; 
     }
 
     public void IncreaseRightArm()
     {
         rightArmUI.Grow();
-        punch.rightArmDmg -= 5;
+        punch.rightArmDmg -= 100;
     }
 
     public void IncreaseMaxHPAndHeal()

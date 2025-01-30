@@ -16,9 +16,10 @@ public class AIHP : HealthComponent
         if (!hpData.isAlive)
         {
             hpData.canTakeDamage = false;
-            agent.enabled = false;
-             
-            flingAndRotate = SingletonTools.Instance.flingAndRotate;
+           
+            if(agent != null)
+               agent.enabled = false;
+            
             flingAndRotate.Explode(rb, pushDirection, pushForce);
         }
     }

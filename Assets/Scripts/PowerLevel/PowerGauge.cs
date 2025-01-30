@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PowerGauge : MonoBehaviour
 {
+    public int killCounter = 0;
     public int currentPower=0;
     public int desiredPowerLevel;
 
@@ -16,6 +17,8 @@ public class PowerGauge : MonoBehaviour
     
     public int currentLevel = 1;
     public int powerRequiredToLevelUp;
+
+    public bool canTakePower = true;
     
     public event Action<int> AnnouncePowerLevel;
 
@@ -28,6 +31,10 @@ public class PowerGauge : MonoBehaviour
 
     public void IncreasePower(int multiplier)
     {
+        if (!canTakePower)
+            return;
+        
+        killCounter++;
         int random = UnityEngine.Random.Range(420, 1420);
         ChangePower(random * multiplier);
     }
@@ -106,5 +113,10 @@ public class PowerGauge : MonoBehaviour
         int killsNeededForNextLevel = 5 * currentLevel * 2;
         powerRequiredToLevelUp = killsNeededForNextLevel * 1420;
         AnnounceLevelUp?.Invoke();
+    }
+
+    public void MaxLevel()
+    {
+        AnnouncePowerLevel?.Invoke(-420);
     }
 }

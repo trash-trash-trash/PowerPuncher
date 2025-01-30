@@ -10,6 +10,12 @@ public class GameOver : MonoBehaviour
     public GameObject dontQuitButton;
     public GameObject reallyQuitButton;
 
+    void Start()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+    
     public void Retry()
     {
         
@@ -17,12 +23,18 @@ public class GameOver : MonoBehaviour
 
     public void Quit()
     {
-        
+        retryButton.SetActive(false);
+        quitButton.SetActive(false);
+        dontQuitButton.SetActive(true);
+        reallyQuitButton.SetActive(true);
     }
     
     public void DontQuit()
     {
-        
+        retryButton.SetActive(true);
+        quitButton.SetActive(true);
+        dontQuitButton.SetActive(false);
+        reallyQuitButton.SetActive(false);
     }
     
     public void ReallyQuit()

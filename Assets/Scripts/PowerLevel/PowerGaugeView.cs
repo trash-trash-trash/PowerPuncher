@@ -45,6 +45,12 @@ public class PowerGaugeView : MonoBehaviour
 
     private void SetText(int powerLevel)
     {
+        if (powerLevel == -420)
+        {
+            powerText.text = "POWER LEVEL: MAXIMUM!!";
+            return;
+        }
+
         powerText.text = "POWER LEVEL: "+powerLevel.ToString("N0");
         
         float progressPercent = (float)powerLevel / powerGauge.powerRequiredToLevelUp * 100f;

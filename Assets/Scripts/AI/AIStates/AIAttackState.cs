@@ -13,7 +13,7 @@ public class AIAttackState : AIStateBase
     {
         base.OnEnable();
 
-        sphereRadius = 1.5f * aiBrain.transform.localScale.x;
+        sphereRadius = 2f * aiBrain.transform.localScale.x;
         
         StartCoroutine(HackWait());
     }
@@ -23,7 +23,7 @@ public class AIAttackState : AIStateBase
         yield return new WaitForFixedUpdate();
         
         PerformOverlapSphere();
-
+        
         float randSecond = Random.Range(.1f, 2.5f);
         
         yield return new WaitForSeconds(randSecond);

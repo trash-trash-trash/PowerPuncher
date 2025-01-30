@@ -6,6 +6,7 @@ public enum MinimapType
     Enemy,
     Powerup,
     Objective,
+    Boss,
     Environment
 }
 
@@ -30,6 +31,9 @@ public class MinimapComponent : MonoBehaviour
                 break;
             case MinimapType.Objective:
                 spr.color = Color.magenta;
+                break;
+            case MinimapType.Boss:
+                spr.color = Color.yellow;
                 break;
             case MinimapType.Environment:
                 spr.color = Color.black;

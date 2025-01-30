@@ -38,9 +38,9 @@ public class HealthComponent : MonoBehaviour
         ChangeHP(hpData.maxHP);
     }
 
-    public void ChangeMaxHP(int maxHP)
+    public void ChangeMaxHP(int newMaxHP)
     {
-        hpData.maxHP = maxHP;
+        hpData.maxHP = newMaxHP;
         AnnounceHP?.Invoke(hpData);
     }
     

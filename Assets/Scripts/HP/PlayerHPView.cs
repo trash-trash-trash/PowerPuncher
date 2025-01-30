@@ -9,6 +9,8 @@ public class PlayerHPView : MonoBehaviour
     public TMP_Text HPText;
 
     public Slider HPSlider;
+
+    public bool player = false;
     
     void OnEnable()
     {
@@ -20,7 +22,10 @@ public class PlayerHPView : MonoBehaviour
         HPSlider.value = obj.currentHP;
         HPSlider.maxValue = obj.maxHP;
         
-        HPText.text = "HP: "+obj.currentHP;
+        if(player)
+            HPText.text = "HP: "+obj.currentHP.ToString("N0");
+        else
+            HPText.text = "OMEGA NIPPER POWER: " + obj.currentHP.ToString("N0");
     }
 
     void OnDisable()

@@ -8,6 +8,9 @@ public class AISpawner : MonoBehaviour
    public Transform playerTransform;
    public GameObject AIPrefab;
    public GameObject HPPrefab;
+
+   public FlingAndRotate flingAndRotate;
+   public PowerGauge powerGauge;
    
    public float minSpawnRadius;
    public float maxSpawnRadius;
@@ -23,7 +26,10 @@ public class AISpawner : MonoBehaviour
 
    public int waveCount = 1;
 
+   public bool doneNuking=false;
+
    private bool spawningLevelOne = false;
+   private bool spawningLevelTwo = false;
    
    void Start()
    {
@@ -35,10 +41,10 @@ public class AISpawner : MonoBehaviour
          pooledObj.transform.parent = transform;
       }
       spawningLevelOne = true;
-      StartCoroutine(SpawnLoop());
+      StartCoroutine(SpawnLoopLevel1());
    }
 
-   public IEnumerator SpawnLoop()
+   public IEnumerator SpawnLoopLevel1()
    {
       while (spawningLevelOne)
       {
@@ -52,6 +58,40 @@ public class AISpawner : MonoBehaviour
          }
 
          yield return new WaitForSeconds(waveCount);
+      }
+   }
+
+   public void NukeAll()
+   {
+      foreach (GameObject obj in pooledAIObjects)
+      {
+         if (!obj.activeInHierarchy)
+            continue;
+         AIHP hp = obj.GetComponent<AIHP>();
+         hp.pushForce = 50;
+         hp.pushDirection = Vector2.up;
+         hp.ChangeHP(-999999999);
+      }
+
+      doneNuking = true;
+   }
+
+   public void SpawnBoss()
+   {
+      spawningLevelOne = false;
+      spawningLevelTwo = true;
+   //   StartCoroutine(SpawnLoopLevel2());
+   }
+   
+   public IEnumerator SpawnLoopLevel2()
+   {
+      while (spawningLevelTwo)
+      {
+         for (int i = 0; i < 10; i++)
+         {
+            SpawnInCircle();
+         }
+         yield return new WaitForSeconds(10);
       }
    }
 
@@ -87,6 +127,9 @@ public class AISpawner : MonoBehaviour
 
             AIBrain brain = spawnedObj.GetComponent<AIBrain>();
             brain.playerTransform = playerTransform;
+            brain.pwrGge = powerGauge;
+            AIHP hp = spawnedObj.GetComponent<AIHP>();
+            hp.flingAndRotate = flingAndRotate;
             brain.waveCount = waveCount;
             brain.ChangeState(AIStates.GrowShrink);
          }

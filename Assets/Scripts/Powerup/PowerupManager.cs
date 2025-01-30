@@ -51,7 +51,7 @@ public class PowerupManager : MonoBehaviour
 
         increaseMovementSpeed.effects = "<color=#00FF00>+5 Movement Speed\n+5 Acceleration</color>";
         increaseMovementSpeed.sprite = movementSprite;
-        increaseMovementSpeed.numCharges = 5;
+        increaseMovementSpeed.numCharges = 3;
         powerups.Add(PowerupsEnum.IncreaseMovementSpeed, increaseMovementSpeed);
         
         //change this to left/right
@@ -61,7 +61,7 @@ public class PowerupManager : MonoBehaviour
         decreaseChargeTime.powerupDescription = "Decreases your punches' minimum charge time, letting you punch faster.";
         decreaseChargeTime.effects = "<color=#00FF00>-0.1 Punch Charge Time</color>";
         decreaseChargeTime.sprite = decreasePunchMinSweetSprite;
-        decreaseChargeTime.numCharges = 8;
+        decreaseChargeTime.numCharges = 7;
         powerups.Add(PowerupsEnum.DecreaseChargeTime, decreaseChargeTime);
         
         Powerup increaseSweetTime = new Powerup();
@@ -70,7 +70,7 @@ public class PowerupManager : MonoBehaviour
         increaseSweetTime.powerupDescription = "Increases your punches' sweet time, making it easier to land.";
         increaseSweetTime.effects = "<color=#00FF00>+0.1 Punch Max Sweet Time</color>";
         increaseSweetTime.sprite = increasePunchMaxSweetSprite;
-        increaseSweetTime.numCharges = 4;
+        increaseSweetTime.numCharges = 3;
         powerups.Add(PowerupsEnum.IncreaseSweetTime, increaseSweetTime);
         
         Powerup increaseEnemyAndScore = new Powerup();
@@ -91,6 +91,9 @@ public class PowerupManager : MonoBehaviour
     
     public void FreezeTime()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        
         Time.timeScale = 0f;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
         isPaused = true;
@@ -111,6 +114,7 @@ public class PowerupManager : MonoBehaviour
         if (powerups.Count == 0)
         {
             AnnounceAllPowerupsAdded?.Invoke();
+            ResumeTime();
             return;
         }
 
@@ -169,6 +173,7 @@ public class PowerupManager : MonoBehaviour
             increaseMinimap.powerupName = "INCREASE MINIMAP";
             increaseMinimap.powerupDescription = "Increases the range and size of your minimap.";
             increaseMinimap.effects = "<color=#00FF00>+20 Minimap Range\n+1.1% Minimap Size</color>";
+            increaseMinimap.numCharges = 3;
             powerups.Add(PowerupsEnum.IncreaseMinimap, increaseMinimap);
         }
         
