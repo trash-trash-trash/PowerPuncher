@@ -12,6 +12,7 @@ public class AIDeathState : AIStateBase
     public override void OnEnable()
     {
         base.OnEnable();
+        aiBrain.miniMapComp.SetActive(false);
         aiBrain.pwrGge.IncreasePower(aiBrain.waveCount);
         aiBrain.HP.hpData.canTakeDamage = false;
         agent.enabled = false;

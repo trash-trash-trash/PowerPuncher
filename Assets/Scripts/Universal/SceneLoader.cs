@@ -3,16 +3,23 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    public string gameOverScene;
-    public string mainScene;   
+    
+    private string mainScene = "MainScene";  
+    private string gameOverScene = "GameOver";
+    private string youWinScene = "YouWin";
+    
+    public void LoadMainScene()
+    { 
+        SceneManager.LoadScene(mainScene);
+    }
     
     public void LoadGameOverScene()
     {
         SceneManager.LoadScene(gameOverScene);
     }
 
-    public void LoadMainScene()
+    public void LoadYouWinScene()
     {
-        SceneManager.LoadScene(mainScene);
+        SceneManager.LoadScene(youWinScene);
     }
 }

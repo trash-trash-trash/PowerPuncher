@@ -2,22 +2,7 @@ using UnityEngine;
 
 public class PauseTime : MonoBehaviour
 {
-    private bool isPaused = false;
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P)) // Press 'P' to pause/resume
-        {
-            if (isPaused)
-            {
-                ResumeTime();
-            }
-            else
-            {
-                FreezeTime();
-            }
-        }
-    }
+    public bool isPaused = false;
 
     public void FreezeTime()
     {

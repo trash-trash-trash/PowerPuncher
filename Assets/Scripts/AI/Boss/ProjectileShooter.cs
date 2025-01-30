@@ -72,7 +72,6 @@ public class ProjectileShooter : MonoBehaviour
 
       return new Vector3(x, 0, z).normalized;
    }
-
    
    private GameObject GetPooledObject()
    {

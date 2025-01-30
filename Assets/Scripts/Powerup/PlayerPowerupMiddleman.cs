@@ -100,17 +100,26 @@ public class PlayerPowerupMiddleman : MonoBehaviour
     { 
         leftArmUI.Grow();
         punch.leftArmDmg -= 100; 
+        punch.sweetPunchRadius += .1f;
+       
+        int maxHP = playerHP.maxHP += 100;
+        
+        playerHP.ChangeMaxHP(maxHP);
     }
 
     public void IncreaseRightArm()
     {
         rightArmUI.Grow();
         punch.rightArmDmg -= 100;
+        punch.sweetPunchRadius += .1f;
+        
+        int maxHP = playerHP.maxHP += 100;
+        
+        playerHP.ChangeMaxHP(maxHP);
     }
 
     public void IncreaseMaxHPAndHeal()
     {
-        HPSliderRect.Grow();
         int maxHP = playerHP.maxHP += 100;
         
         playerHP.ChangeMaxHP(maxHP);

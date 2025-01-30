@@ -7,6 +7,9 @@ public class PowerupManager : MonoBehaviour
 {
     public bool isPaused = false;
     
+    //hack remove later if care
+    public Pause pause;
+    
     public GameObject powerGaugeObj;
     public GameObject leftArmSliderObj;
     public GameObject rightArmSliderObj;
@@ -85,12 +88,14 @@ public class PowerupManager : MonoBehaviour
         increaseMaxHP.powerupName = "POWER UP HEALTH";
         increaseMaxHP.powerupDescription = "Increases your Max HP and heals you to full."; 
         increaseMaxHP.effects = "<color=#00FF00>-0.1 Punch Charge Time</color>";
-        increaseSweetTime.numCharges = 10;
+        increaseMaxHP.numCharges = 10;
         powerups.Add(PowerupsEnum.IncreaseMaxHPAndHeal, increaseMaxHP);
     }
     
     public void FreezeTime()
     {
+        pause.FlipCanQuit(false);
+        
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         
@@ -210,5 +215,7 @@ public class PowerupManager : MonoBehaviour
         rightArmSliderObj.SetActive(true);
         
         AnnounceFreezeTime?.Invoke(isPaused);
+        
+        pause.FlipCanQuit(true);
     }
 }

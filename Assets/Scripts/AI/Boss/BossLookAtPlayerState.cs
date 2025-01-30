@@ -13,7 +13,7 @@ public class BossLookAtPlayerState : BossStateBase
 
     IEnumerator WaitRandomTimeToAttack()
     {
-        float rand = Random.Range(5f, 10f);
+        float rand = Random.Range(4f, 6f);
         yield return new WaitForSeconds(rand);
         bossBrain.ChangeState(BossStates.Attack);
     }

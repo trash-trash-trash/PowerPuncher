@@ -10,9 +10,9 @@ public class BossAttackState : BossStateBase
     public override void OnEnable()
     {
         base.OnEnable();
-        
+        PushPlayerBack();
         int rand = UnityEngine.Random.Range(0, 100);
-        if (rand < 50)
+        if (rand < 75)
             StartCoroutine(HackAttackWait(projectile.numShots * projectile.fireRate));
         else
             StartCoroutine(HackSpawnWait());
@@ -22,12 +22,12 @@ public class BossAttackState : BossStateBase
     {
         projectile.ShootMachineGun();
         yield return new WaitForSeconds(waitTime);
-        PushPlayerBack();
+        bossBrain.ChangeState(BossStates.TurnToPlayer);
     }
 
     IEnumerator HackSpawnWait()
     {
-        int counter = Random.Range(1, 5);
+        int counter = Random.Range(5,12);
         int count = 0;
         while (count < counter)
         {
@@ -36,18 +36,16 @@ public class BossAttackState : BossStateBase
             yield return new WaitForFixedUpdate();
         }
 
-        yield return new WaitForSeconds(3f);
-        PushPlayerBack();
+        yield return new WaitForSeconds(.1f);
+        bossBrain.ChangeState(BossStates.TurnToPlayer);
     }
 
     public void PushPlayerBack()
     {
         Rigidbody rb = bossBrain.playerTransform.GetComponent<Rigidbody>();
-        Vector3 pushDirection =  bossBrain.transform.position -bossBrain.playerTransform.position;
+        Vector3 pushDirection =  Vector3.zero -bossBrain.playerTransform.position;
         pushDirection.Normalize();
-        Vector3 finalDirection = new Vector3(pushDirection.x, 1, pushDirection.z);
-        rb.AddForce(finalDirection * 50, ForceMode.Impulse);
-        
-        bossBrain.ChangeState(BossStates.TurnToPlayer);
+        Vector3 finalDirection = new Vector3(pushDirection.x, 0, pushDirection.z);
+        rb.AddForce(finalDirection * 200, ForceMode.Impulse);
     }
 }

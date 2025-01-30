@@ -359,6 +359,7 @@ MonoBehaviour:
   growShrinkObj: {fileID: 1220142988173080759}
   attackObj: {fileID: 317942638195395835}
   dieObj: {fileID: 6669461906414408610}
+  miniMapComp: {fileID: 7471739302647933528}
   sm: {fileID: 5404768337277362282}
 --- !u!114 &5404768337277362282
 MonoBehaviour:
@@ -762,5 +763,10 @@ PrefabInstance:
 --- !u!4 &5991863746896336021 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3090146794452267362, guid: 3148dd07feed222429a12af8cf1098f1, type: 3}
+  m_PrefabInstance: {fileID: 8774428759474284023}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7471739302647933528 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2194936614835720111, guid: 3148dd07feed222429a12af8cf1098f1, type: 3}
   m_PrefabInstance: {fileID: 8774428759474284023}
   m_PrefabAsset: {fileID: 0}

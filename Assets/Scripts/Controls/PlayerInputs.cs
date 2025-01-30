@@ -53,6 +53,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""3e204f3c-7643-4ed5-aa72-9e19ced1f190"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +141,17 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""54ecfd76-9613-4a46-a01c-e91526ea7129"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +163,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Keyboard_LeftPunch = m_Keyboard.FindAction("LeftPunch", throwIfNotFound: true);
         m_Keyboard_RightPunch = m_Keyboard.FindAction("RightPunch", throwIfNotFound: true);
         m_Keyboard_Movement = m_Keyboard.FindAction("Movement", throwIfNotFound: true);
+        m_Keyboard_Escape = m_Keyboard.FindAction("Escape", throwIfNotFound: true);
     }
 
     ~@PlayerInputs()
@@ -212,6 +233,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Keyboard_LeftPunch;
     private readonly InputAction m_Keyboard_RightPunch;
     private readonly InputAction m_Keyboard_Movement;
+    private readonly InputAction m_Keyboard_Escape;
     public struct KeyboardActions
     {
         private @PlayerInputs m_Wrapper;
@@ -219,6 +241,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @LeftPunch => m_Wrapper.m_Keyboard_LeftPunch;
         public InputAction @RightPunch => m_Wrapper.m_Keyboard_RightPunch;
         public InputAction @Movement => m_Wrapper.m_Keyboard_Movement;
+        public InputAction @Escape => m_Wrapper.m_Keyboard_Escape;
         public InputActionMap Get() { return m_Wrapper.m_Keyboard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -237,6 +260,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
+            @Escape.started += instance.OnEscape;
+            @Escape.performed += instance.OnEscape;
+            @Escape.canceled += instance.OnEscape;
         }
 
         private void UnregisterCallbacks(IKeyboardActions instance)
@@ -250,6 +276,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
+            @Escape.started -= instance.OnEscape;
+            @Escape.performed -= instance.OnEscape;
+            @Escape.canceled -= instance.OnEscape;
         }
 
         public void RemoveCallbacks(IKeyboardActions instance)
@@ -272,5 +301,6 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnLeftPunch(InputAction.CallbackContext context);
         void OnRightPunch(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
+        void OnEscape(InputAction.CallbackContext context);
     }
 }

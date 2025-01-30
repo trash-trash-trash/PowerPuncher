@@ -7,6 +7,7 @@ public class AISpawnState : AIStateBase
     public override void OnEnable()
     {
         base.OnEnable();
+        aiBrain.miniMapComp.SetActive(true);
         rb = GetComponentInParent<Rigidbody>();
         StartCoroutine(HackWait());
     }

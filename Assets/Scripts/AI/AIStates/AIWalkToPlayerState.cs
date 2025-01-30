@@ -19,12 +19,11 @@ public class AIWalkToPlayerState : AIStateBase
     {
         base.OnEnable();
 
-        minDist = 1.5f * aiBrain.transform.localScale.x;
+        minDist = 5f * aiBrain.transform.localScale.x;
 
         playerTrans = aiBrain.playerTransform;
         
         agent.enabled = true;
-        agent.radius = 0.5f +  0.1f * aiBrain.transform.localScale.x;
         
         if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 10, NavMesh.AllAreas))
         {

@@ -9,6 +9,8 @@ public class PlayerControls : MonoBehaviour
     public event Action<InputAction.CallbackContext> AnnounceLeftPunch;
     public event Action<InputAction.CallbackContext> AnnounceRightPunch;
     public event Action<Vector2> AnnounceMovementVector2;
+
+    public event Action AnnounceQuit;
     
     private void Awake()
     {
@@ -20,6 +22,12 @@ public class PlayerControls : MonoBehaviour
         playerInputs.Keyboard.RightPunch.canceled += OnRightPunch;
         playerInputs.Keyboard.Movement.performed += OnWASDMovement;
         playerInputs.Keyboard.Movement.canceled += OnWASDMovement;
+        playerInputs.Keyboard.Escape.canceled += OnQuit;
+    }
+
+    private void OnQuit(InputAction.CallbackContext context)
+    {
+        AnnounceQuit?.Invoke();
     }
 
     private void OnWASDMovement(InputAction.CallbackContext context)

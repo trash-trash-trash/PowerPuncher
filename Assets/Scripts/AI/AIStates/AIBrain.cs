@@ -20,8 +20,9 @@ public class AIBrain : MonoBehaviour
     public GameObject growShrinkObj;
     public GameObject attackObj;
     public GameObject dieObj;
-
-
+    
+    public GameObject miniMapComp;
+    
     public Dictionary<AIStates, GameObject> AIStatesDict = new Dictionary<AIStates, GameObject>();
 
     public GameObjectStateManager sm;

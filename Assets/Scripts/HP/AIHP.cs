@@ -20,7 +20,8 @@ public class AIHP : HealthComponent
             if(agent != null)
                agent.enabled = false;
             
-            flingAndRotate.Explode(rb, pushDirection, pushForce);
+            if(rb!=null)
+                flingAndRotate.Explode(rb, pushDirection, pushForce);
         }
     }
 }
