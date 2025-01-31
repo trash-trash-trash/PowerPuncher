@@ -55,7 +55,7 @@ public class PlayerPowerupMiddleman : MonoBehaviour
     public void IncreaseMinimap()
     {
         miniMapUI.Grow();
-        miniMapCamera.orthographicSize += 5;
+        miniMapCamera.orthographicSize += 2;
     }
 
     public void IncreaseEnemySize()
@@ -102,9 +102,9 @@ public class PlayerPowerupMiddleman : MonoBehaviour
         punch.leftArmDmg -= 100; 
         punch.sweetPunchRadius += .1f;
        
-        int maxHP = playerHP.maxHP += 100;
+        int newMaxHP = playerHP.hpData.maxHP += 100;
         
-        playerHP.ChangeMaxHP(maxHP);
+        playerHP.ChangeMaxHP(newMaxHP);
     }
 
     public void IncreaseRightArm()
@@ -113,16 +113,15 @@ public class PlayerPowerupMiddleman : MonoBehaviour
         punch.rightArmDmg -= 100;
         punch.sweetPunchRadius += .1f;
         
-        int maxHP = playerHP.maxHP += 100;
+        int newMaxHP = playerHP.hpData.maxHP += 100;
         
-        playerHP.ChangeMaxHP(maxHP);
+        playerHP.ChangeMaxHP(newMaxHP);
     }
 
     public void IncreaseMaxHPAndHeal()
     {
-        int maxHP = playerHP.maxHP += 100;
-        
-        playerHP.ChangeMaxHP(maxHP);
-        playerHP.ChangeHP(maxHP);
+         int newMaxHP = playerHP.hpData.maxHP += 100;
+         playerHP.ChangeMaxHP(newMaxHP);
+         playerHP.ChangeHP(playerHP.hpData.maxHP);
     }
 }

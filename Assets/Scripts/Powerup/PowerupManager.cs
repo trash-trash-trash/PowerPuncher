@@ -38,7 +38,7 @@ public class PowerupManager : MonoBehaviour
     {
         Powerup addMinimap = new Powerup();
         addMinimap.powerupType = PowerupsEnum.AddMiniMap;
-        addMinimap.powerupName = "ADD MINIMAP";
+        addMinimap.powerupName = "MINIMAP POWER";
         addMinimap.powerupDescription = "Adds a minimap to your HUD.";
         addMinimap.effects = "<color=#00FF00>+1 Minimap</color>";
         addMinimap.sprite = addMinimapSprite;
@@ -47,7 +47,7 @@ public class PowerupManager : MonoBehaviour
         
         Powerup increaseMovementSpeed = new Powerup();
         increaseMovementSpeed.powerupType = PowerupsEnum.IncreaseMovementSpeed;
-        increaseMovementSpeed.powerupName = "POWER UP LEGS";
+        increaseMovementSpeed.powerupName = "LEGS POWER";
         increaseMovementSpeed.powerupDescription = "Increases your movement speed.";
         
      //   exampleText.text = "This is <color=#FF0000>red</color>\nThis is <color=#00FF00>green</color>\nThis is <color=#0000FF>blue</color>";
@@ -60,7 +60,7 @@ public class PowerupManager : MonoBehaviour
         //change this to left/right
         Powerup decreaseChargeTime = new Powerup();
         decreaseChargeTime.powerupType = PowerupsEnum.DecreaseChargeTime;
-        decreaseChargeTime.powerupName = "POWER UP PUNCH SPEED";
+        decreaseChargeTime.powerupName = "BICEP POWER";
         decreaseChargeTime.powerupDescription = "Decreases your punches' minimum charge time, letting you punch faster.";
         decreaseChargeTime.effects = "<color=#00FF00>-0.1 Punch Charge Time</color>";
         decreaseChargeTime.sprite = decreasePunchMinSweetSprite;
@@ -69,7 +69,7 @@ public class PowerupManager : MonoBehaviour
         
         Powerup increaseSweetTime = new Powerup();
         increaseSweetTime.powerupType = PowerupsEnum.IncreaseSweetTime;
-        increaseSweetTime.powerupName = "POWER UP PUNCH TIME";
+        increaseSweetTime.powerupName = "FIST POWER";
         increaseSweetTime.powerupDescription = "Increases your punches' sweet time, making it easier to land.";
         increaseSweetTime.effects = "<color=#00FF00>+0.1 Punch Max Sweet Time</color>";
         increaseSweetTime.sprite = increasePunchMaxSweetSprite;
@@ -85,7 +85,7 @@ public class PowerupManager : MonoBehaviour
         
         Powerup increaseMaxHP = new Powerup();
         increaseMaxHP.powerupType = PowerupsEnum.IncreaseMaxHPAndHeal;
-        increaseMaxHP.powerupName = "POWER UP HEALTH";
+        increaseMaxHP.powerupName = "PECS POWER";
         increaseMaxHP.powerupDescription = "Increases your Max HP and heals you to full."; 
         increaseMaxHP.effects = "<color=#00FF00>-0.1 Punch Charge Time</color>";
         increaseMaxHP.numCharges = 10;
@@ -175,10 +175,11 @@ public class PowerupManager : MonoBehaviour
             
             Powerup increaseMinimap = new Powerup();
             increaseMinimap.powerupType = PowerupsEnum.IncreaseMinimap;
-            increaseMinimap.powerupName = "INCREASE MINIMAP";
+            increaseMinimap.powerupName = "MINIMAP POWERUP";
             increaseMinimap.powerupDescription = "Increases the range and size of your minimap.";
             increaseMinimap.effects = "<color=#00FF00>+20 Minimap Range\n+1.1% Minimap Size</color>";
             increaseMinimap.numCharges = 3;
+            increaseMinimap.sprite = increaseMinimapSprite;
             powerups.Add(PowerupsEnum.IncreaseMinimap, increaseMinimap);
         }
         

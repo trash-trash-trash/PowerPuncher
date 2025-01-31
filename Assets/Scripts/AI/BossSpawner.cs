@@ -28,8 +28,6 @@ public class BossSpawner : MonoBehaviour
 
     IEnumerator SpawnBoss()
     {
-        powerGauge.canTakePower = false;
-        powerGauge.powerIncreasing = true;
         powerGauge.MaxLevel();
         
         yield return new WaitForSeconds(10f);

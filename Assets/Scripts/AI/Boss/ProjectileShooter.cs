@@ -42,10 +42,11 @@ public class ProjectileShooter : MonoBehaviour
    public void Shoot(int index)
    {
       GameObject obj = GetPooledObject();
-      
-      obj.transform.position = shootingTransform.position;
       Rigidbody rb = obj.GetComponent<Rigidbody>();
-      
+      rb.linearVelocity = Vector3.zero;
+      rb.angularVelocity = Vector3.zero;
+      obj.SetActive(true);
+      obj.transform.position = shootingTransform.position;
       Vector3 direction = (playerTransform.position - shootingTransform.position).normalized;
 
       if (index % 2 == 0)

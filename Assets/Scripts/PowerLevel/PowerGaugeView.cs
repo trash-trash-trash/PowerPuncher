@@ -21,7 +21,13 @@ public class PowerGaugeView : MonoBehaviour
              originalPosition = powerText.rectTransform.position;
              powerGauge = gameObject.GetComponentInParent<PowerGauge>();
              powerGauge.AnnouncePowerLevel += SetText;
+             powerGauge.AnnounceMaxLevel += SetMaxText;
              StartCoroutine(ShakeCoroutine());
+    }
+
+    private void SetMaxText()
+    {
+        powerText.text = "POWER LEVEL: MAXIMUM!!";
     }
 
     IEnumerator ShakeCoroutine()
@@ -45,13 +51,8 @@ public class PowerGaugeView : MonoBehaviour
 
     private void SetText(int powerLevel)
     {
-        if (powerLevel == -420)
-        {
-            powerText.text = "POWER LEVEL: MAXIMUM!!";
-            return;
-        }
-
-        powerText.text = "POWER LEVEL: "+powerLevel.ToString("N0");
+        int power = powerLevel * 1000000;
+        powerText.text = "POWER LEVEL: "+power.ToString("N0");
         
         float progressPercent = (float)powerLevel / powerGauge.powerRequiredToLevelUp * 100f;
         powerSlider.maxValue = 100;

@@ -5,5 +5,6 @@ public enum AIStates
     WalkToPlayer,
     GrowShrink,
     Attack,
+    Celebrate,
     Die
 }

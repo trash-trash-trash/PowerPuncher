@@ -8,13 +8,15 @@ public class LevelManager : MonoBehaviour
 
     public SceneLoader sceneLoader;
 
+    public GameObject titleScreenObj;
+
     public GameObject tutorialObj;
 
     public Pause pause;
 
     void OnEnable()
     {
-        ShowTut(true);
+        ShowTitle(true);
         Time.timeScale = 0f;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
         Cursor.lockState = CursorLockMode.None;
@@ -24,10 +26,15 @@ public class LevelManager : MonoBehaviour
         bossHP.AnnounceHP += WinGame;
     }
 
-    private void WinGame(HealthData obj)
+    public void ShowTitle(bool input)
     {
-        if(!obj.isAlive)
-            sceneLoader.LoadYouWinScene();
+        titleScreenObj.SetActive(input);
+    }
+
+    public void ShowTutorial()
+    {
+        titleScreenObj.SetActive(false);
+        ShowTut(true);
     }
 
     public void ShowTut(bool input)
@@ -36,7 +43,8 @@ public class LevelManager : MonoBehaviour
     }
 
     public void StartGame()
-    {ShowTut(false);
+    {
+        ShowTut(false);
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
         pause.FlipCanQuit(true);
@@ -44,7 +52,13 @@ public class LevelManager : MonoBehaviour
 
     private void EndGame(HealthData obj)
     {
-            if(!obj.isAlive)
-                sceneLoader.LoadGameOverScene();
+        if(!obj.isAlive) 
+            sceneLoader.LoadGameOverScene();
+    }   
+    
+    private void WinGame(HealthData obj)
+    {
+        if(!obj.isAlive)
+            sceneLoader.LoadYouWinScene();
     }
 }

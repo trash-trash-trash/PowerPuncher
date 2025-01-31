@@ -6,14 +6,16 @@ public class AIAttackState : AIStateBase
     private float sphereRadius = 1;
     
     public LayerMask layerMask;
+
+    public bool hitPlayer;
     
     private Collider[] colliders = new Collider[10];
     
     public override void OnEnable()
     {
         base.OnEnable();
-
-        sphereRadius = 2f * aiBrain.transform.localScale.x;
+        hitPlayer = false;
+        sphereRadius = 5f * aiBrain.transform.localScale.x;
         
         StartCoroutine(HackWait());
     }
@@ -21,14 +23,16 @@ public class AIAttackState : AIStateBase
     IEnumerator HackWait()
     {
         yield return new WaitForFixedUpdate();
+
+        int charges = 0;
+        while (charges < 15 || !hitPlayer)
+        {
+            PerformOverlapSphere();
+            charges++;
+            yield return new WaitForFixedUpdate();
+        }
         
-        PerformOverlapSphere();
-        
-        float randSecond = Random.Range(.1f, 2.5f);
-        
-        yield return new WaitForSeconds(randSecond);
-        
-        aiBrain.ChangeState(AIStates.WalkToPlayer);
+        aiBrain.ChangeState(AIStates.Celebrate);
     }
     
     public void PerformOverlapSphere()
@@ -42,13 +46,17 @@ public class AIAttackState : AIStateBase
             PlayerHP health = colliders[i].GetComponentInParent<PlayerHP>();
             if (health != null)
             {
-                health.ChangeHP(-10 * aiBrain.waveCount);
-                
-                Rigidbody rb = colliders[i].GetComponent<Rigidbody>();
-                Vector3 pushDirection = colliders[i].transform.position - aiBrain.transform.position;
-                pushDirection.Normalize();
-                Vector3 finalDirection = new Vector3(pushDirection.x, 0, pushDirection.z);
-                rb.AddForce(finalDirection * 50, ForceMode.Impulse);
+                if (!hitPlayer)
+                {
+                    health.ChangeHP(-10 * aiBrain.waveCount);
+
+                    Rigidbody rb = colliders[i].GetComponent<Rigidbody>();
+                    Vector3 pushDirection = colliders[i].transform.position - aiBrain.transform.position;
+                    pushDirection.Normalize();
+                    Vector3 finalDirection = new Vector3(pushDirection.x, 0, pushDirection.z);
+                    rb.AddForce(finalDirection * 50, ForceMode.Impulse);
+                    hitPlayer = true;
+                }
             } 
         }
     }

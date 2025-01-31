@@ -19,6 +19,8 @@ public class PowerGauge : MonoBehaviour
     public int powerRequiredToLevelUp;
 
     public bool canTakePower = true;
+
+    public event Action AnnounceMaxLevel;
     
     public event Action<int> AnnouncePowerLevel;
 
@@ -35,7 +37,7 @@ public class PowerGauge : MonoBehaviour
             return;
         
         killCounter++;
-        int random = UnityEngine.Random.Range(420, 1420);
+        int random = UnityEngine.Random.Range(1, 10);
         ChangePower(random * multiplier);
     }
     
@@ -80,16 +82,17 @@ public class PowerGauge : MonoBehaviour
         powerIncreasing = true;
         while (currentPower < desiredPowerLevel)
         {
-          //  currentPower++;
-            
-            int multiplierGroup = Mathf.FloorToInt(numberOfMultipliers / 10);  // Every 5 multipliers, increase by a power of 10
+            int powerGap = desiredPowerLevel - currentPower;
+        
+            int exponent = Mathf.FloorToInt(Mathf.Log10(powerGap));
+            float increment = Mathf.Pow(10, exponent) * (1 + numberOfMultipliers * 0.1f);
+        
+            currentPower += Mathf.CeilToInt(increment);
 
-            // Increase power by 10^multiplierGroup
-            float increment = Mathf.Pow(10, multiplierGroup);
+            float speedFactor = Mathf.Pow(10, exponent) / 100f; 
+            float waitTime = Mathf.Max(0.001f, 1f / (numberOfMultipliers * speedFactor)); 
 
-            currentPower += (int)increment;
-            
-            yield return new WaitForSeconds(1f / numberOfMultipliers);
+            yield return new WaitForSeconds(waitTime);
             AnnouncePowerLevel?.Invoke(currentPower);
             
             if (currentPower >= powerRequiredToLevelUp)
@@ -107,16 +110,18 @@ public class PowerGauge : MonoBehaviour
 
     private void LevelUp()
     {
-        currentLevel += 10;
+        currentLevel += 1;
         currentPower -= powerRequiredToLevelUp;
 
-        int killsNeededForNextLevel = 5 * currentLevel * 2;
-        powerRequiredToLevelUp = killsNeededForNextLevel * 1420;
+        int killsNeededForNextLevel = 10 * currentLevel;
+        powerRequiredToLevelUp = killsNeededForNextLevel * 100;
         AnnounceLevelUp?.Invoke();
     }
 
     public void MaxLevel()
     {
-        AnnouncePowerLevel?.Invoke(-420);
+        canTakePower = false;
+        AnnounceMaxLevel?.Invoke();
+        powerIncreasing = true;
     }
 }

@@ -19,7 +19,7 @@ public class AIWalkToPlayerState : AIStateBase
     {
         base.OnEnable();
 
-        minDist = 5f * aiBrain.transform.localScale.x;
+        minDist = 1.5f * aiBrain.transform.localScale.x;
 
         playerTrans = aiBrain.playerTransform;
         

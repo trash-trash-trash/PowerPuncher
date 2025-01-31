@@ -27,7 +27,7 @@ public class BossAttackState : BossStateBase
 
     IEnumerator HackSpawnWait()
     {
-        int counter = Random.Range(5,12);
+        int counter = Random.Range(25,50);
         int count = 0;
         while (count < counter)
         {
@@ -36,7 +36,7 @@ public class BossAttackState : BossStateBase
             yield return new WaitForFixedUpdate();
         }
 
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSeconds(3f);
         bossBrain.ChangeState(BossStates.TurnToPlayer);
     }
 

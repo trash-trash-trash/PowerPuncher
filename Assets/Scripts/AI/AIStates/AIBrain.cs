@@ -19,6 +19,7 @@ public class AIBrain : MonoBehaviour
     public GameObject walkObj;
     public GameObject growShrinkObj;
     public GameObject attackObj;
+    public GameObject celebrateObj;
     public GameObject dieObj;
     
     public GameObject miniMapComp;
@@ -40,6 +41,7 @@ public class AIBrain : MonoBehaviour
             AIStatesDict.Add(AIStates.FlyToEarth, flyObj);
             AIStatesDict.Add(AIStates.WalkToPlayer, walkObj);
             AIStatesDict.Add(AIStates.Attack, attackObj);
+            AIStatesDict.Add(AIStates.Celebrate, celebrateObj);
             AIStatesDict.Add(AIStates.Die, dieObj);
 
             //hack?
