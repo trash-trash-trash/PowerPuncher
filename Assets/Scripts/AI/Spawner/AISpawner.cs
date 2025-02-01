@@ -49,7 +49,7 @@ public class AISpawner : MonoBehaviour
       while (spawningLevelOne)
       {
          numberToSpawn++;
-         if(numberToSpawn % 3 == 0)
+         if(numberToSpawn % 5 == 0)
             waveCount++;
          
          for (int i = 0; i < numberToSpawn; i++)
@@ -57,7 +57,7 @@ public class AISpawner : MonoBehaviour
             SpawnInCircle();
          }
 
-         yield return new WaitForSeconds(waveCount);
+         yield return new WaitForSeconds(waveCount/2);
       }
    }
 
@@ -153,7 +153,7 @@ public class AISpawner : MonoBehaviour
 
    bool OneInTenChance()
    {
-      return Random.Range(0, 100/waveCount) == 0;
+      return Random.Range(0, 250/waveCount) == 0;
    }
 
    private GameObject GetPooledAIObject()

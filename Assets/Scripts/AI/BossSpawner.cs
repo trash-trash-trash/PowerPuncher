@@ -33,7 +33,7 @@ public class BossSpawner : MonoBehaviour
         powerGauge.MaxLevel();
         musicPlayer.StopAllClips();
         
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(5f);
      
         aiSpawner.NukeAll();
         powerGaugeObj.SetActive(false);
@@ -41,7 +41,7 @@ public class BossSpawner : MonoBehaviour
         bossHPObj.SetActive(true);
         aiSpawner.SpawnBoss();
         
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(5f);
         musicPlayer.BossSong();
     }
 

@@ -12,6 +12,8 @@ public class LevelManager : MonoBehaviour
 
     public GameObject tutorialObj;
 
+    public MusicPlayer mp;
+    
     public Pause pause;
 
     void OnEnable()
@@ -48,6 +50,7 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
         pause.FlipCanQuit(true);
+        mp.StartSong();
     }
 
     private void EndGame(HealthData obj)

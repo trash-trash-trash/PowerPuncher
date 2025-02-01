@@ -6,19 +6,21 @@ public class MusicPlayer : MonoBehaviour
 {
     public AudioClip bass;
     public AudioClip hiHat00;
-    public AudioClip hiHat01;
     public AudioClip kick00;
-    public AudioClip kick01;
+    public AudioClip drums;
     public AudioClip snare;
-    public AudioClip melody;
+    public AudioClip chords;
+
+    public AudioClip song;
+
+    public AudioSource songSource;
 
     public AudioSource bassSource;
     public AudioSource hiHat00Source;
-    public AudioSource hiHat01Source;
     public AudioSource kick00Source;
-    public AudioSource kick01Source;
+    public AudioSource drumsSource;
     public AudioSource snareSource;
-    public AudioSource melodySource;
+    public AudioSource chordsSource;
 
     public Dictionary<AudioClip, AudioSource> audioSources;
     private List<AudioSource> playingSources = new List<AudioSource>();
@@ -32,32 +34,30 @@ public class MusicPlayer : MonoBehaviour
             { kick00, kick00Source },
             { hiHat00, hiHat00Source },
             { snare, snareSource },
-            { kick01, kick01Source },
+            { drums, drumsSource },
             { bass, bassSource },
-            { hiHat01, hiHat01Source },
-            { melody, melodySource }
+            { chords, chordsSource }
         };
-
-        foreach (KeyValuePair<AudioClip, AudioSource> kvp in audioSources)
-        {
-            kvp.Value.clip = kvp.Key;
-        }
-        
-        //start all clips playing from their individual sources at once (volume set to 0)
-        
-        StartAllClips();
-        StartSong();
     }
 
-    void StartSong()
+    public void StartSong()
     {
         playingSources.Clear();
+        double startTime = AudioSettings.dspTime + 1.0;
+        
+        foreach (var kvp in audioSources)
+        {
+            kvp.Value.clip = kvp.Key;
+            kvp.Value.loop = true;  
+            kvp.Value.PlayScheduled(startTime);
+        }
+
         ShuffleNextInLine();
     }
 
     void ShuffleNextInLine()
     {
-        foreach (var clip in new[] { kick00, hiHat00,  bass, kick01, snare, hiHat01 })
+        foreach (var clip in new[] { kick00, hiHat00, snare, bass, chords, drums })
         {
             if (audioSources.TryGetValue(clip, out AudioSource source) && !playingSources.Contains(source))
             {
@@ -72,13 +72,16 @@ public class MusicPlayer : MonoBehaviour
     {
         source.volume = 0f;
         float elapsedTime = 0f;
+
         while (elapsedTime < increaseTime)
         {
             source.volume = Mathf.Lerp(0f, 1f, elapsedTime / increaseTime);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
         source.volume = 1f;
+        
         ShuffleNextInLine();
     }
 
@@ -90,20 +93,10 @@ public class MusicPlayer : MonoBehaviour
         }
     }
 
-    void StartAllClips()
-    {
-        foreach (var source in audioSources.Values)
-        {
-            source.Play();
-        }
-    }
-
     public void BossSong()
     {
-        foreach (var source in audioSources.Values)
-        {
-            source.volume = 1;
-            source.Play();
-        }
+        songSource.clip = song;
+        songSource.loop = true;
+        songSource.PlayScheduled(AudioSettings.dspTime); 
     }
 }

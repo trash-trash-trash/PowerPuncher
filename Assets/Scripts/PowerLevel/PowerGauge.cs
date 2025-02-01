@@ -41,12 +41,22 @@ public class PowerGauge : MonoBehaviour
 
             if (totalKillCount < 50)
             {
-                adjustedCurveMultiplier = Mathf.Max(curveMultiplier * 0.5f, 0.1f);
+                adjustedCurveMultiplier = Mathf.Max(curveMultiplier * 0.3f, 0.1f);
             }
-            else if (totalKillCount % 50 == 0)
+            else if (totalKillCount >= 50 && totalKillCount < 99)
             {
-                adjustedCurveMultiplier = Mathf.Max(curveMultiplier * 0.9f, 0.05f);
+                adjustedCurveMultiplier = Mathf.Max(curveMultiplier * 0.5f, 0.03f);
             }
+            else if (totalKillCount >= 100 && totalKillCount < 149)
+            {
+                adjustedCurveMultiplier = Mathf.Max(curveMultiplier * 0.7f, 0.5f);
+            }
+            else if (totalKillCount >= 150)
+            {
+                adjustedCurveMultiplier = Mathf.Max(curveMultiplier * 0.9f, 0.7f);
+            }
+            
+
             killsNeeded += Mathf.CeilToInt(killsNeeded * adjustedCurveMultiplier);
             AnnounceLevelUp?.Invoke();
         }
