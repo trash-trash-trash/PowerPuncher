@@ -49,7 +49,7 @@ public class AISpawner : MonoBehaviour
       while (spawningLevelOne)
       {
          numberToSpawn++;
-         if(numberToSpawn % 5 == 0)
+         if(numberToSpawn % 3 == 0)
             waveCount++;
          
          for (int i = 0; i < numberToSpawn; i++)

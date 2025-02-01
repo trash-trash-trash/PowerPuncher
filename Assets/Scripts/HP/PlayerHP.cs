@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerHP : HealthComponent
 {
     public float invincibilityTime = 0.3f;
+
+    public event Action AnnounceTookDamage;
     
     public event Action<bool> AnnounceCanTakeDamage;
     public override void ChangeHP(int amount)
@@ -17,6 +19,7 @@ public class PlayerHP : HealthComponent
     IEnumerator TookDamage()
     {
         hpData.canTakeDamage = true;
+        AnnounceTookDamage?.Invoke();
         AnnounceCanTakeDamage?.Invoke(hpData.canTakeDamage);
 
         yield return new WaitForSeconds(invincibilityTime);

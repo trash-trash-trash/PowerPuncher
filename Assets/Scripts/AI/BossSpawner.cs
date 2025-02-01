@@ -12,6 +12,8 @@ public class BossSpawner : MonoBehaviour
     public PowerupManager powerupManager;
 
     public AISpawner aiSpawner;
+
+    public MusicPlayer musicPlayer;
     
     //why is boss handling power gauge stuff?
     //rushed lol
@@ -29,6 +31,7 @@ public class BossSpawner : MonoBehaviour
     IEnumerator SpawnBoss()
     {
         powerGauge.MaxLevel();
+        musicPlayer.StopAllClips();
         
         yield return new WaitForSeconds(10f);
      
@@ -37,6 +40,9 @@ public class BossSpawner : MonoBehaviour
         bossObj.SetActive(true);
         bossHPObj.SetActive(true);
         aiSpawner.SpawnBoss();
+        
+        yield return new WaitForSeconds(10f);
+        musicPlayer.BossSong();
     }
 
     void Disable()

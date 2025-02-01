@@ -36,9 +36,7 @@ public class AICelebrateState : AIStateBase
 
         NavMeshHit hit;
         if (NavMesh.SamplePosition(targetPosition, out hit, randomDistance, NavMesh.AllAreas))
-        {
             agent.SetDestination(hit.position);
-        }
         else
             MoveToRandomPointAway();
     }

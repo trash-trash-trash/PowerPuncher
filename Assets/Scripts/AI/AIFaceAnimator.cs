@@ -13,7 +13,7 @@ public class AIFaceAnimator : MonoBehaviour
 
    private void ChangeFace(AIStates obj)
    {
-      if(obj == AIStates.Attack)
+      if(obj == AIStates.Attack || obj == AIStates.Celebrate || obj==AIStates.FlyToEarth)
          animator.Play(("EnemyAIFace_Attack"));
       else if (obj == AIStates.Die)
          animator.Play("EnemyAIFace_TakeDamage");

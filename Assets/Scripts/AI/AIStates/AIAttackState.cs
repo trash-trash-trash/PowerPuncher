@@ -48,7 +48,7 @@ public class AIAttackState : AIStateBase
             {
                 if (!hitPlayer)
                 {
-                    health.ChangeHP(-10 * aiBrain.waveCount);
+                    health.ChangeHP(-25 * aiBrain.waveCount);
 
                     Rigidbody rb = colliders[i].GetComponent<Rigidbody>();
                     Vector3 pushDirection = colliders[i].transform.position - aiBrain.transform.position;

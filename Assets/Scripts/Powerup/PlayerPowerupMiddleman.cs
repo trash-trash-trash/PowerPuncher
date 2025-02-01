@@ -21,7 +21,7 @@ public class PlayerPowerupMiddleman : MonoBehaviour
     public RectTransform leftArmImage;
     public RectTransform rightArmImage;
 
-    private float maxSpeedIncrement=50;
+    private float maxSpeedIncrement=100;
 
     public UIGrow miniMapUI;
     public UIArmsGrow leftArmUI;

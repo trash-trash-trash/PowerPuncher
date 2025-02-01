@@ -13,7 +13,7 @@ public class AIDeathState : AIStateBase
     {
         base.OnEnable();
         aiBrain.miniMapComp.SetActive(false);
-        aiBrain.pwrGge.IncreasePower(aiBrain.waveCount);
+        aiBrain.pwrGge.IncreasePower();
         aiBrain.HP.hpData.canTakeDamage = false;
         agent.enabled = false;
         StartCoroutine(WaitToDespawn());

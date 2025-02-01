@@ -27,6 +27,9 @@ public class PowerupManager : MonoBehaviour
     public Sprite increaseMinimapSprite;
     public Sprite increasePunchMaxSweetSprite;
     public Sprite decreasePunchMinSweetSprite;
+    public Sprite increaseHealthSprite;
+
+    public int powerupCounter;
 
     public event Action AnnounceAllPowerupsAdded;
     
@@ -36,6 +39,8 @@ public class PowerupManager : MonoBehaviour
 
     void Start()
     {
+        powerupCounter = 0;
+        
         Powerup addMinimap = new Powerup();
         addMinimap.powerupType = PowerupsEnum.AddMiniMap;
         addMinimap.powerupName = "MINIMAP POWER";
@@ -89,6 +94,7 @@ public class PowerupManager : MonoBehaviour
         increaseMaxHP.powerupDescription = "Increases your Max HP and heals you to full."; 
         increaseMaxHP.effects = "<color=#00FF00>-0.1 Punch Charge Time</color>";
         increaseMaxHP.numCharges = 10;
+        increaseMaxHP.sprite = increaseHealthSprite;
         powerups.Add(PowerupsEnum.IncreaseMaxHPAndHeal, increaseMaxHP);
     }
     
@@ -186,6 +192,8 @@ public class PowerupManager : MonoBehaviour
         powerup.numCharges--;
         if (powerup.numCharges <= 0)
             powerups.Remove(powerup.powerupType);
+
+        powerupCounter++;
     }
 
     public void Reset()

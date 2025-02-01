@@ -12,8 +12,9 @@ public class PowerGaugeView : MonoBehaviour
   
     public float shakeAmount;
 
-    private Vector3 originalPosition;  
+    private Vector3 originalPosition;
 
+    private bool shaking = false;
     private IEnumerator shakeRoutine;
 
     void Start()
@@ -22,39 +23,41 @@ public class PowerGaugeView : MonoBehaviour
              powerGauge = gameObject.GetComponentInParent<PowerGauge>();
              powerGauge.AnnouncePowerLevel += SetText;
              powerGauge.AnnounceMaxLevel += SetMaxText;
-             StartCoroutine(ShakeCoroutine());
+             powerGauge.AnnounceKillCounter += SetLevelUpGauge;
+             shakeRoutine = ShakeCoroutine();
     }
 
     private void SetMaxText()
     {
-        powerText.text = "POWER LEVEL: MAXIMUM!!";
+        powerText.text = "POWER LEVEL:                 MAXIMUM!!";
     }
 
     IEnumerator ShakeCoroutine()
     {
-        while (true) 
+        shaking = true;
+        while (shaking) 
         {
-            if (powerGauge.powerIncreasing)
-            {
-                float xOffset = Random.Range(-shakeAmount, shakeAmount);
-                float yOffset = Random.Range(-shakeAmount, shakeAmount);
-                powerText.rectTransform.position = originalPosition + new Vector3(xOffset, yOffset, 0);
-            }
-            else
-            {
-                powerText.rectTransform.position = originalPosition;
-            }
+            float xOffset = Random.Range(-shakeAmount, shakeAmount);
+            float yOffset = Random.Range(-shakeAmount, shakeAmount);
+            powerText.rectTransform.position = originalPosition + new Vector3(xOffset, yOffset, 0);
 
             yield return null;
         }
+        
+        powerText.rectTransform.position = originalPosition;
     }
 
     private void SetText(int powerLevel)
     {
-        int power = powerLevel * 1000000;
-        powerText.text = "POWER LEVEL: "+power.ToString("N0");
+        powerText.text = "POWER LEVEL: "+powerLevel.ToString("N0");
+    }
+
+    private void SetLevelUpGauge(int newKillCounter, int newKillsNeeded)
+    {
+        if(!shaking)
+            StartCoroutine(shakeRoutine);
         
-        float progressPercent = (float)powerLevel / powerGauge.powerRequiredToLevelUp * 100f;
+        float progressPercent = (float)newKillCounter / newKillsNeeded * 100f;
         powerSlider.maxValue = 100;
         powerSlider.value = progressPercent;
     }
@@ -62,5 +65,7 @@ public class PowerGaugeView : MonoBehaviour
     void OnDisable()
     {
         powerGauge.AnnouncePowerLevel -= SetText;
+        powerGauge.AnnounceMaxLevel -= SetMaxText;
+        powerGauge.AnnounceKillCounter -= SetLevelUpGauge;
     }
 }

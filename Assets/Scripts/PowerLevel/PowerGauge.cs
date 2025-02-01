@@ -4,23 +4,22 @@ using UnityEngine;
 
 public class PowerGauge : MonoBehaviour
 {
-    public int killCounter = 0;
-    public int currentPower=0;
-    public int desiredPowerLevel;
-
-    public float numberOfMultipliers=1;
-    public int maxNumberOfMultipliers = 30;
+    public int totalKillCount;
+    public int killCounter;
+    public int killsNeeded;
+    public int level = 1;
+    public float curveMultiplier = 0.3f;
+    public int multiplier=3;
+    public int maxMultiplier = 8;
+    private int multiplierCounter;
     
-    public bool powerIncreasing=false;
-
-    private IEnumerator addPowerCoro;
+    public int powerLevel=100;
     
-    public int currentLevel = 1;
-    public int powerRequiredToLevelUp;
-
     public bool canTakePower = true;
 
     public event Action AnnounceMaxLevel;
+
+    public event Action<int, int> AnnounceKillCounter;
     
     public event Action<int> AnnouncePowerLevel;
 
@@ -28,100 +27,56 @@ public class PowerGauge : MonoBehaviour
 
     void Start()
     {
-        addPowerCoro = AddMotherfuckingPower();
+        killsNeeded = 2;
     }
 
-    public void IncreasePower(int multiplier)
+    public void IncreasePower()
     {
-        if (!canTakePower)
+        killCounter++;
+        totalKillCount++;
+        if (killCounter >= killsNeeded)
+        {
+            killCounter = 0;
+            float adjustedCurveMultiplier = curveMultiplier;
+
+            if (totalKillCount < 50)
+            {
+                adjustedCurveMultiplier = Mathf.Max(curveMultiplier * 0.5f, 0.1f);
+            }
+            else if (totalKillCount % 50 == 0)
+            {
+                adjustedCurveMultiplier = Mathf.Max(curveMultiplier * 0.9f, 0.05f);
+            }
+            killsNeeded += Mathf.CeilToInt(killsNeeded * adjustedCurveMultiplier);
+            AnnounceLevelUp?.Invoke();
+        }
+        AddMultiplier();
+        AnnounceKillCounter?.Invoke(killCounter, killsNeeded);
+    }
+
+    void Update()
+    {
+        if (canTakePower)
+        {
+            powerLevel += (int)(Time.deltaTime * Mathf.Pow(10, multiplier - 1));
+            AnnouncePowerLevel?.Invoke(powerLevel);
+        }
+    }
+
+    public void AddMultiplier()
+    {
+        if (multiplier >= maxMultiplier)
             return;
         
-        killCounter++;
-        int random = UnityEngine.Random.Range(1, 10);
-        ChangePower(random * multiplier);
-    }
-    
-    public void ChangePower(int input)
-    {
-        int newPower = desiredPowerLevel + input;
-
-        if (newPower <= 0)
-            newPower = 0;
+        multiplierCounter++;
         
-        desiredPowerLevel = newPower;
-
-        if (currentPower < desiredPowerLevel)
-        {
-            if (powerIncreasing)
-            {
-                StopCoroutine(addPowerCoro);
-                StartCoroutine(AddMultiplier());
-                numberOfMultipliers++;
-                addPowerCoro = AddMotherfuckingPower();
-                StartCoroutine(addPowerCoro);
-            }
-            else
-            {
-                addPowerCoro = AddMotherfuckingPower();
-                StartCoroutine(addPowerCoro);
-            }
-        }
-    }
-
-    IEnumerator AddMultiplier()
-    {
-        yield return new WaitForSeconds(20f);
-        numberOfMultipliers--;
-
-        if (numberOfMultipliers <= 0)
-            numberOfMultipliers = 0;
-    }
-
-    public IEnumerator AddMotherfuckingPower()
-    {
-        powerIncreasing = true;
-        while (currentPower < desiredPowerLevel)
-        {
-            int powerGap = desiredPowerLevel - currentPower;
-        
-            int exponent = Mathf.FloorToInt(Mathf.Log10(powerGap));
-            float increment = Mathf.Pow(10, exponent) * (1 + numberOfMultipliers * 0.1f);
-        
-            currentPower += Mathf.CeilToInt(increment);
-
-            float speedFactor = Mathf.Pow(10, exponent) / 100f; 
-            float waitTime = Mathf.Max(0.001f, 1f / (numberOfMultipliers * speedFactor)); 
-
-            yield return new WaitForSeconds(waitTime);
-            AnnouncePowerLevel?.Invoke(currentPower);
-            
-            if (currentPower >= powerRequiredToLevelUp)
-            {
-                LevelUp();
-            }
-        }
-        
-        if(currentPower > desiredPowerLevel)
-            currentPower = desiredPowerLevel;
-
-        AnnouncePowerLevel?.Invoke(currentPower);
-        powerIncreasing = false;
-    }
-
-    private void LevelUp()
-    {
-        currentLevel += 1;
-        currentPower -= powerRequiredToLevelUp;
-
-        int killsNeededForNextLevel = 10 * currentLevel;
-        powerRequiredToLevelUp = killsNeededForNextLevel * 100;
-        AnnounceLevelUp?.Invoke();
+        if(multiplierCounter % 10==0) 
+            multiplier++;
     }
 
     public void MaxLevel()
     {
         canTakePower = false;
         AnnounceMaxLevel?.Invoke();
-        powerIncreasing = true;
     }
 }

@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System.Collections;
 
 public class Sunset : MonoBehaviour
 {
@@ -18,8 +19,6 @@ public class Sunset : MonoBehaviour
 
     public RectTransform textRectTransform;
     
-    private float elapsedTime = 0f;
-
     public PlayerControls playerControls;
 
     private bool revealed = false;
@@ -35,6 +34,8 @@ public class Sunset : MonoBehaviour
         playerControls.AnnounceMovementVector2 += AnyInputWASD;
         playerControls.AnnounceLeftPunch += AnyInput;
         playerControls.AnnounceLeftPunch += AnyInput;
+        
+        StartCoroutine(SunsetRoutine());
     }
 
     private void AnyInputWASD(Vector2 obj)
@@ -58,25 +59,39 @@ public class Sunset : MonoBehaviour
         revealed = true;
         replayButton.SetActive(true);
         quitButton.SetActive(true);
+        
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
-    void Update()
+    private IEnumerator SunsetRoutine()
     {
-        sunRectTransform.anchoredPosition -= new Vector2(0, moveSpeed /2 * Time.deltaTime);
-        textRectTransform.anchoredPosition += new Vector2(0, moveSpeed * 2* Time.deltaTime);
-        
-        elapsedTime += Time.deltaTime;
-        float lerpFactor = (elapsedTime % (colorLerpDuration * 2)) / colorLerpDuration;
-        int colorIndex = Mathf.FloorToInt(lerpFactor);
-        float colorT = lerpFactor - colorIndex;
-        
-        if (colorIndex < sunColors.Length - 1)
+        float elapsedTime = 0f;
+        int colorIndex = 0;
+
+        while (colorIndex < sunColors.Length - 1)
         {
-            sunImage.color = Color.Lerp(sunColors[colorIndex], sunColors[colorIndex + 1], colorT);
-            skyImage.color = Color.Lerp(skyColors[colorIndex], skyColors[colorIndex + 1], colorT);
+            while (elapsedTime < colorLerpDuration)
+            {
+                float t = elapsedTime / colorLerpDuration;
+                sunImage.color = Color.Lerp(sunColors[colorIndex], sunColors[colorIndex + 1], t);
+                skyImage.color = Color.Lerp(skyColors[colorIndex], skyColors[colorIndex + 1], t);
+                
+                sunRectTransform.anchoredPosition -= new Vector2(0, moveSpeed / 2 * Time.deltaTime);
+                textRectTransform.anchoredPosition += new Vector2(0, moveSpeed * 2 * Time.deltaTime);
+                
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            
+            elapsedTime = 0f;
+            colorIndex++;
         }
         
-        if(elapsedTime > colorLerpDuration *2&& !revealed)
+        sunImage.color = sunColors[sunColors.Length - 1];
+        skyImage.color = skyColors[skyColors.Length - 1];
+        
+        if (!revealed)
             RevealButtons();
     }
 
