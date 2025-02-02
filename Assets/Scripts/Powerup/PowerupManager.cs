@@ -226,5 +226,8 @@ public class PowerupManager : MonoBehaviour
         AnnounceFreezeTime?.Invoke(isPaused);
         
         pause.FlipCanQuit(true);
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }

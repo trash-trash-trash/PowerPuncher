@@ -40,7 +40,8 @@ public class Pause : MonoBehaviour
           Time.fixedDeltaTime = 0.02f * Time.timeScale;
       }
       else
-      {
+      {Cursor.lockState = CursorLockMode.Locked;
+          Cursor.visible = false;
           Time.timeScale = 1f;
           Time.fixedDeltaTime = 0.02f;
       }

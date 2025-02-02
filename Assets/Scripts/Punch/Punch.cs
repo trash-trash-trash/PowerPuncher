@@ -176,7 +176,7 @@ public class Punch : MonoBehaviour
             {
                 Vector3 pushDirection =  obj.transform.position -playerTransform.position;
                 pushDirection.Normalize();
-                Vector3 finalDirection = new Vector3(pushDirection.x, 1, pushDirection.z);
+                Vector3 finalDirection = new Vector3(pushDirection.x, .5f, pushDirection.z);
 
                 health.pushDirection = finalDirection;
                 health.pushForce = newAttackForce;

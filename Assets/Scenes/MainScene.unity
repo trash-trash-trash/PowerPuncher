@@ -3069,7 +3069,7 @@ MonoBehaviour:
   rb: {fileID: 1157113085}
   acceleration: 1200
   maxSpeed: 700
-  rotationSpeed: 150
+  rotationSpeed: 800
   controls: {fileID: 1541630396}
   playerTransform: {fileID: 1157113084}
 --- !u!114 &457507164
@@ -6851,7 +6851,7 @@ MonoBehaviour:
   killCounter: 0
   killsNeeded: 0
   level: 1
-  curveMultiplier: 0.15
+  curveMultiplier: 0.3
   multiplier: 3
   maxMultiplier: 8
   powerLevel: 100
@@ -8154,7 +8154,7 @@ MonoBehaviour:
   fulfilled: 0
   armImage: {fileID: 1422956175}
   left: 1
-  moveAmount: 20
+  moveAmount: 25
   alphaDecayAmount: 0.04
 --- !u!1 &1439713628
 GameObject:
@@ -8702,7 +8702,7 @@ MonoBehaviour:
   fulfilled: 0
   armImage: {fileID: 1484250387}
   left: 0
-  moveAmount: 20
+  moveAmount: 25
   alphaDecayAmount: 0.04
 --- !u!1 &1490832630
 GameObject:

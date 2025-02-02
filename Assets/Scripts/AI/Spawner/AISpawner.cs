@@ -57,7 +57,7 @@ public class AISpawner : MonoBehaviour
             SpawnInCircle();
          }
 
-         yield return new WaitForSeconds(waveCount/2);
+         yield return new WaitForSeconds(waveCount);
       }
    }
 

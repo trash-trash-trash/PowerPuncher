@@ -51,6 +51,8 @@ public class LevelManager : MonoBehaviour
         Time.fixedDeltaTime = 0.02f;
         pause.FlipCanQuit(true);
         mp.StartSong();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void EndGame(HealthData obj)
